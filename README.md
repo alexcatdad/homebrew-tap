@@ -19,7 +19,9 @@ brew tap alexcatdad/tap
 
 ### Install
 
+<!-- BEGIN INSTALL -->
 ```bash
 brew install alexcatdad/tap/paw
 brew install alexcatdad/tap/paw-proxy
 ```
+<!-- END INSTALL -->
