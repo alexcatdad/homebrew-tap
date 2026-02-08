@@ -2,7 +2,7 @@ class Paw < Formula
   desc "Personal dotfiles manager CLI"
   homepage "https://alexcatdad.github.io/paw/"
   license "MIT"
-  version "0.2.0"
+  version "0.3.0"
 
   on_macos do
     on_arm do
