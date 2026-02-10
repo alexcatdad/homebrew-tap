@@ -1,0 +1,12 @@
+{
+  "what": "Homebrew tap containing formulae for alexcatdad command-line tools.",
+  "why": "Provides standard package distribution and upgrade paths for maintained CLI utilities.",
+  "tags": [
+    "homebrew",
+    "distribution",
+    "cli",
+    "dev-tools"
+  ],
+  "featured": false,
+  "order": 50
+}
