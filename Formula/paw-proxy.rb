@@ -2,26 +2,26 @@ class PawProxy < Formula
   desc "Zero-config HTTPS proxy for local macOS development"
   homepage "https://github.com/alexcatdad/paw-proxy"
   license "MIT"
-  version "1.2.1"
+  version "1.2.2"
 
   on_macos do
     on_arm do
-      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.2.1/paw-proxy-darwin-arm64"
-      sha256 "2ef9a905a22c9be018954739869fa19f6538487f37d0fa7c974a7c6b8f740e4a"
+      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.2.2/paw-proxy-darwin-arm64"
+      sha256 "2c62a23f0793487f3b307ef4a9c2d889c9ad4f553f19aa07d1f41132f6374101"
 
       resource "up" do
-        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.2.1/up-darwin-arm64"
-        sha256 "67e0a92787548937e1f1c69150da81b0fb029146ad73822d55a433c61af7bb80"
+        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.2.2/up-darwin-arm64"
+        sha256 "852334a39d0250cb75ef4fabddf4df1b25f9461701d3ccf92ddb84666006ad28"
       end
     end
 
     on_intel do
-      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.2.1/paw-proxy-darwin-amd64"
-      sha256 "4763a84bbc9652c0420219af365e1be20c6de01b1d58bfd3ef594949bdf7e7fd"
+      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.2.2/paw-proxy-darwin-amd64"
+      sha256 "b0a300bc3e9ffe3e4ee7ec122318c1bde96b076104c9b69cf35c8ca5a1e8cda2"
 
       resource "up" do
-        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.2.1/up-darwin-amd64"
-        sha256 "ca9b4bf68094020e8da403e952a94c78e8f4e405ce4bcefead993184178e7d3d"
+        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.2.2/up-darwin-amd64"
+        sha256 "302799e43e736a5d036384136dfa8e2641fb5ab71f934bc5537ba4befe110462"
       end
     end
   end
