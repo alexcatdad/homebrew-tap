@@ -13,7 +13,7 @@ brew tap alexcatdad/tap
 <!-- BEGIN FORMULAE -->
 | Formula | Version | Description |
 |---------|---------|-------------|
-| [paw-proxy](https://github.com/alexcatdad/paw-proxy) | 1.2.0 | Zero-config HTTPS proxy for local macOS development |
+| [paw-proxy](https://github.com/alexcatdad/paw-proxy) | 1.3.0 | Zero-config HTTPS proxy for local macOS development |
 | [paw](https://github.com/alexcatdad/paw) | 0.3.0 | Personal dotfiles manager CLI |
 <!-- END FORMULAE -->
 
@@ -24,4 +24,5 @@ brew tap alexcatdad/tap
 brew install alexcatdad/tap/paw-proxy
 brew install alexcatdad/tap/paw
 ```
+
 <!-- END INSTALL -->
