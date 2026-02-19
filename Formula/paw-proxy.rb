@@ -2,33 +2,33 @@ class PawProxy < Formula
   desc "Zero-config HTTPS proxy for local macOS development"
   homepage "https://github.com/alexcatdad/paw-proxy"
   license "MIT"
-  version "1.6.0"
+  version "1.7.0"
 
   on_macos do
     on_arm do
-      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.6.0/paw-proxy-darwin-arm64"
-      sha256 "8a80b9f59e820b12f417aa6e34cbace17f0f1997cbcafee506d8c55608c14dbb"
+      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.7.0/paw-proxy-darwin-arm64"
+      sha256 "885e055039bec8638fd61acddd0d04a25706b35181d3f8f83ab284b2521cce7d"
 
       resource "up" do
-        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.6.0/up-darwin-arm64"
-        sha256 "5549a57746c6452d6dbbc741abb3184c51adf59ab3b9dbcf969460969f624912"
+        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.7.0/up-darwin-arm64"
+        sha256 "8b333c9c12f385d196da4cb233961af8a3e7b84ec63493500926302a6dde5f8f"
       end
     end
 
     on_intel do
-      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.6.0/paw-proxy-darwin-amd64"
-      sha256 "2336aea2dc7ca4b7579ac6415344a09d095760091bb3491f51be6752250dcfc9"
+      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.7.0/paw-proxy-darwin-amd64"
+      sha256 "e485f855be2e213b7fcc8e27b43851427c25c8669e5d86254730042a381c82ab"
 
       resource "up" do
-        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.6.0/up-darwin-amd64"
-        sha256 "30812160848a2af41b568665fd814861b7fbf7e91bcfda3640aa62fa9c7deb42"
+        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.7.0/up-darwin-amd64"
+        sha256 "e44e242584ce92f5d74e2c01e2a9ca2bf3f218b1fc5240ac008c48c3c307bf02"
       end
     end
   end
 
   resource "man-pages" do
-    url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.6.0/man-pages.tar.gz"
-    sha256 "5d3326777ff0812a59d88249a50184488fb0faa414affe12c426de2bad8046be"
+    url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.7.0/man-pages.tar.gz"
+    sha256 "b12c960a277a40aa0391bf34806da556d3deda49fb9509a209eb9c80a963d7a1"
   end
 
   def install
