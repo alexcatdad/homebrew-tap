@@ -2,29 +2,29 @@ class Paw < Formula
   desc "Personal dotfiles manager CLI"
   homepage "https://alexcatdad.github.io/paw/"
   license "MIT"
-  version "0.3.0"
+  version "0.4.0"
 
   on_macos do
     on_arm do
       url "https://github.com/alexcatdad/paw/releases/download/v#{version}/paw-darwin-arm64"
-      sha256 "e97dcc33d7192fda3fb438eeaaec0a50ca5eaed64c059bd89a128517fd51a6ff"
+      sha256 "010564503c11c387ede55b7e3d9b195d8565f2030371c1a6699e6bff34382b0e"
     end
 
     on_intel do
       url "https://github.com/alexcatdad/paw/releases/download/v#{version}/paw-darwin-x64"
-      sha256 "79d6116900247a7f56e99b260ee0df18c62a1567b4ea31ad49f8002f1c8da2f7"
+      sha256 "e9cd8073688dc3ced3abf2891bf456f9042e037187643e7143d012bb2f703d05"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/alexcatdad/paw/releases/download/v#{version}/paw-linux-arm64"
-      sha256 "7868606f83c1ffceb4e6e444fe2e458fa499f92cef76a35660f622905f734120"
+      sha256 "cd3caa59721ca7d9aba8837ec782360672a38dec11f39d1fe0f67215133fb914"
     end
 
     on_intel do
       url "https://github.com/alexcatdad/paw/releases/download/v#{version}/paw-linux-x64"
-      sha256 "1f1d0ee394189c4436a47d65c808fdd870273b4ec7fb2c6a9488dddd2630f547"
+      sha256 "e4b9db63843ffec2fd4d0868a810d2cad68260dfe26404f1fb75ead4c8d4bfa7"
     end
   end
 
