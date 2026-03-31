@@ -15,7 +15,7 @@ brew tap alexcatdad/tap
 |---------|---------|-------------|
 | [paw-proxy](https://github.com/alexcatdad/paw-proxy) | 1.12.1 | Zero-config HTTPS proxy for local macOS development |
 | [paw](https://github.com/alexcatdad/paw) | 0.5.0 | Personal dotfiles manager CLI |
-| [usb-boop](https://github.com/alexcatdad/usb-boop) | 2026.03.31.0 | Native macOS menu bar app for USB connection speed detection (cask) |
+| [usb-boop](https://github.com/alexcatdad/usb-boop) | 2026.03.31.1 | Native macOS menu bar app for USB connection speed detection (cask) |
 <!-- END FORMULAE -->
 
 ### Install
