@@ -49,8 +49,9 @@ The compatibility fix is published in the current cask.
 
 ## usb-boop signed release transition
 
-- [ ] Deliver the first locally signed and notarized release (planned `2026.09.17.4`); current `2026.09.17.3` is ad-hoc signed.
-- [ ] Confirm upstream release verification succeeds and the automatic cask update matches its version, URL, and checksum without quarantine removal.
+- [x] Deliver the first locally signed and notarized release, `2026.09.17.4`; the earlier `2026.09.17.3` archive remains unchanged.
+- [x] Confirm upstream release verification succeeds and the automatic cask update matches its version, URL, and checksum without quarantine removal.
 
 These are delivery checks, not claims of manual hardware or UI acceptance.
-Follow the [maintenance runbook](../docs/usb-boop-maintenance.md).
+The [maintenance runbook](../docs/usb-boop-maintenance.md) links the successful
+verification workflow and delivered cask commit.
