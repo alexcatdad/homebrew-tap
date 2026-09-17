@@ -15,7 +15,7 @@ brew tap alexcatdad/tap
 |---------|---------|-------------|
 | [paw-proxy](https://github.com/alexcatdad/paw-proxy) | 1.12.1 | Zero-config HTTPS proxy for local macOS development |
 | [paw](https://github.com/alexcatdad/paw) | 0.5.0 | Personal dotfiles manager CLI |
-| [usb-boop](https://github.com/alexcatdad/usb-boop) | 2026.09.17.2 | Menu bar app that reports negotiated USB link speed (cask) |
+| [usb-boop](https://github.com/alexcatdad/usb-boop) | 2026.09.17.3 | Menu bar app that reports negotiated USB link speed (cask) |
 <!-- END FORMULAE -->
 
 ### Install
