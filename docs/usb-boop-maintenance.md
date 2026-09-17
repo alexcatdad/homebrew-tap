@@ -13,6 +13,8 @@ brew trust --cask alexcatdad/usbboopcheck/usb-boop
 brew style --cask alexcatdad/usbboopcheck/usb-boop
 HOMEBREW_DEVELOPER=1 brew info --cask alexcatdad/usbboopcheck/usb-boop
 brew untrust --cask alexcatdad/usbboopcheck/usb-boop
+# Remove our temporary definition so untap need not load an untrusted cask.
+rm "$(brew --repository alexcatdad/usbboopcheck)/Casks/usb-boop.rb"
 brew untap alexcatdad/usbboopcheck
 ```
 
