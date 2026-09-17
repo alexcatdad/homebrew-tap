@@ -1,8 +1,8 @@
 cask "usb-boop" do
-  version "2026.09.17.3"
-  sha256 "8a89f6f827c43f503aa4f805898b19d00b977ea51b90e1eb76b1c5143298fcc8"
+  version "2026.09.17.4"
+  sha256 "8ba593b72af0a6e666e52640f68a7810525d3ec4d3d251b146686499fa69f973"
 
-  url "https://github.com/alexcatdad/usb-boop/releases/download/v2026.09.17.3/usb-boop-macos-arm64.zip"
+  url "https://github.com/alexcatdad/usb-boop/releases/download/v2026.09.17.4/usb-boop-macos-arm64.zip"
   name "usb-boop"
   desc "Menu bar app that reports negotiated USB link speed"
   homepage "https://github.com/alexcatdad/usb-boop"
@@ -16,14 +16,6 @@ cask "usb-boop" do
   depends_on macos: :sonoma
 
   app "usb-boop.app"
-
-  # The app is ad-hoc signed rather than notarized, so Gatekeeper would
-  # otherwise refuse to launch it. Remove this once Developer ID signing
-  # and notarization are in place.
-  postflight_steps do
-    run "/usr/bin/xattr",
-        args: ["-rd", "com.apple.quarantine", "{{appdir}}/usb-boop.app"]
-  end
 
   # Kept alphabetical: brew style enforces Cask/ArrayAlphabetization.
   # The app is sandboxed, so its preferences live inside its container;
