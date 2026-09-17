@@ -47,3 +47,10 @@ Planning is doing its job if:
 - important blockers are explicit
 - release or production gaps are visible without chat archaeology
 
+## usb-boop delivery
+
+Keep cask generation and binary verification authoritative in `alexcatdad/usb-boop`.
+Local signing/notarization precedes publication; verified release delivery then
+updates the cask and README table automatically. Documentation changes in this
+tap should not race or duplicate that version update. See the
+[maintenance runbook](../docs/usb-boop-maintenance.md).
