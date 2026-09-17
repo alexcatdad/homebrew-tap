@@ -41,3 +41,8 @@ The repo is ready for a broader push when:
 - [ ] the biggest operational gaps are closed or explicitly accepted
 - [ ] release blockers are visible and small enough to manage
 
+
+## usb-boop Homebrew 7
+
+Local style and developer-mode cask loading pass after removing `verified:`.
+Publish the tap fix and upstream generator/CI fix through their PRs.
