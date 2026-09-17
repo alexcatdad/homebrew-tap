@@ -24,3 +24,12 @@ The running log of decisions that materially affect `homebrew-tap`.
 
 Remove deprecated `url verified:` from usb-boop and its upstream generator.
 Preserve artifact identity. Validation is documented in [the runbook](../docs/usb-boop-maintenance.md).
+
+## 2026-09-17: Locally signed usb-boop releases
+
+Keep Developer ID signing and Apple notarization on the maintainer's Mac, with
+credentials in Keychain. Upstream verifies each published package before its
+automatic tap update. The first signed version, `2026.09.17.4`, is published;
+`2026.09.17.3` remains unchanged. The verified signed cask update removed the
+quarantine bypass. Both upstream verification and tap delivery passed; see
+[maintenance and release delivery](../docs/usb-boop-maintenance.md) for evidence.

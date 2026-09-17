@@ -45,4 +45,13 @@ The repo is ready for a broader push when:
 ## usb-boop Homebrew 7
 
 Local style and developer-mode cask loading pass after removing `verified:`.
-Publish the tap fix and upstream generator/CI fix through their PRs.
+The compatibility fix is published in the current cask.
+
+## usb-boop signed release transition
+
+- [x] Deliver the first locally signed and notarized release, `2026.09.17.4`; the earlier `2026.09.17.3` archive remains unchanged.
+- [x] Confirm upstream release verification succeeds and the automatic cask update matches its version, URL, and checksum without quarantine removal.
+
+These are delivery checks, not claims of manual hardware or UI acceptance.
+The [maintenance runbook](../docs/usb-boop-maintenance.md) links the successful
+verification workflow and delivered cask commit.

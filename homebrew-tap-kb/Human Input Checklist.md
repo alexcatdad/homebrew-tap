@@ -32,3 +32,10 @@ The running list of tasks that require a real human to provide access, credentia
 
 - [ ] Record any validation that must happen on a real machine, real account, or real environment
 
+## usb-boop release ownership
+
+The maintainer has authorized local signing and current-version publication.
+Developer ID signing and the notarization Keychain profile are available on
+their Mac; future releases require that Mac and its signing access. No Apple
+credential export to this tap or GitHub Actions is required. Follow the
+[upstream release procedure](../docs/usb-boop-maintenance.md#local-signing-and-release-delivery).
