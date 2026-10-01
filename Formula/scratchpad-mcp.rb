@@ -1,30 +1,30 @@
 class ScratchpadMcp < Formula
   desc "Private project memory for developers and coding agents"
   homepage "https://github.com/alexcatdad/scratchpad"
-  version "0.1.2"
+  version "0.1.3"
 
   depends_on "git"
   depends_on "openssh"
 
   on_macos do
     on_arm do
-        url "https://github.com/alexcatdad/scratchpad/releases/download/v0.1.2/scratchpad-mcp-v0.1.2-darwin-arm64.zip"
-        sha256 "9ec9fb1c6a4df9cf3776059155d4af4abc7d336df98b0a31228295968828d245"
+        url "https://github.com/alexcatdad/scratchpad/releases/download/v0.1.3/scratchpad-mcp-v0.1.3-darwin-arm64.zip"
+        sha256 "ddb4258ed0b20b4bd7d4a849ab8e83edd853d1fd6ade724e5507bc631907d9d6"
     end
     on_intel do
-        url "https://github.com/alexcatdad/scratchpad/releases/download/v0.1.2/scratchpad-mcp-v0.1.2-darwin-amd64.zip"
-        sha256 "dae2aece67ae03fc4703e72a09993c6c044ba937edb3bf6aef6590f055982c35"
+        url "https://github.com/alexcatdad/scratchpad/releases/download/v0.1.3/scratchpad-mcp-v0.1.3-darwin-amd64.zip"
+        sha256 "2edd3cc11e3d53dc717971bf8b7d01c4e88e84d229fcf47fa198ad948d3ce87c"
     end
   end
 
   on_linux do
     on_arm do
-        url "https://github.com/alexcatdad/scratchpad/releases/download/v0.1.2/scratchpad-mcp-v0.1.2-linux-arm64.tar.gz"
-        sha256 "360280ccd0dedb9a45276c325bd3c3b8fa37d4b49d0f1188c01665380477d36f"
+        url "https://github.com/alexcatdad/scratchpad/releases/download/v0.1.3/scratchpad-mcp-v0.1.3-linux-arm64.tar.gz"
+        sha256 "bdcff0d91b7304871915c953290cf26f90bde734f21bec94c2ab085e0d4b77d5"
     end
     on_intel do
-        url "https://github.com/alexcatdad/scratchpad/releases/download/v0.1.2/scratchpad-mcp-v0.1.2-linux-amd64.tar.gz"
-        sha256 "9cbe02e7c6dbe65042efe4956761f3ed93308e16a9270ed6835927c3db3a0611"
+        url "https://github.com/alexcatdad/scratchpad/releases/download/v0.1.3/scratchpad-mcp-v0.1.3-linux-amd64.tar.gz"
+        sha256 "dcb0350da921732c4e27423aae23da8282a50d2801b90cb2dbd2caafa46d1ae1"
     end
   end
 
