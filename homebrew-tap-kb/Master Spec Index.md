@@ -40,3 +40,5 @@ Use this note when you want a stable reading path through repo truth, execution,
 
 
 - [usb-boop maintenance runbook](../docs/usb-boop-maintenance.md)
+
+- [Hosted CI checks](../docs/ci-checks.md)
