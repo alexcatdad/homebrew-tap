@@ -33,3 +33,7 @@ automatic tap update. The first signed version, `2026.09.17.4`, is published;
 `2026.09.17.3` remains unchanged. The verified signed cask update removed the
 quarantine bypass. Both upstream verification and tap delivery passed; see
 [maintenance and release delivery](../docs/usb-boop-maintenance.md) for evidence.
+
+## 2026-10-08: Public hosted CI
+
+Run Ruby syntax checks for all formulae and casks on GitHub-hosted macOS for pull requests and main pushes. Keep artifact download, installation and signing verification in existing upstream release procedures. No homelab runner or package installation is part of this gate. See [CI checks](../docs/ci-checks.md).

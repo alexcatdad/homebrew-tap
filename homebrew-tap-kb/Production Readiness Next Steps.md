@@ -55,3 +55,7 @@ The compatibility fix is published in the current cask.
 These are delivery checks, not claims of manual hardware or UI acceptance.
 The [maintenance runbook](../docs/usb-boop-maintenance.md) links the successful
 verification workflow and delivered cask commit.
+
+## Hosted source checks
+
+[CI checks](../docs/ci-checks.md) now define the reproducible source gate. Hosted acceptance is established by the checks on the exact PR commit; source changes alone do not prove release or deployment acceptance.
