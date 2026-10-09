@@ -54,3 +54,7 @@ Local signing/notarization precedes publication; verified release delivery then
 updates the cask and README table automatically. Documentation changes in this
 tap should not race or duplicate that version update. See the
 [maintenance runbook](../docs/usb-boop-maintenance.md).
+
+Linux usb-boop source formula delivery uses the same upstream generator with
+`--linux`. Keep the initial formula PR dependent on the app PR, pin its final
+commit/checksum, and require the expanded platform install checks before merge.

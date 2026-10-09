@@ -37,3 +37,12 @@ quarantine bypass. Both upstream verification and tap delivery passed; see
 ## 2026-10-08: Public hosted CI
 
 Run Ruby syntax checks for all formulae and casks on GitHub-hosted macOS for pull requests and main pushes. Keep artifact download, installation and signing verification in existing upstream release procedures. No homelab runner or package installation is part of this gate. See [CI checks](../docs/ci-checks.md).
+
+## 2026-10-09: Separate Linux usb-boop formula
+
+Add a Linux-only source formula alongside the unchanged signed Mac cask. The
+initial development preview pins an immutable upstream PR commit; stable delivery
+remains upstream-owned and independently gates the Linux and Mac entries. Expand
+hosted usb-boop checks to native Linux builds/installations on both architectures
+and signed Mac cask installation. See [CI checks](../docs/ci-checks.md) and
+[maintenance](../docs/usb-boop-maintenance.md#linux-formula).

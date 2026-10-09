@@ -59,3 +59,10 @@ verification workflow and delivered cask commit.
 ## Hosted source checks
 
 [CI checks](../docs/ci-checks.md) now define the reproducible source gate. Hosted acceptance is established by the checks on the exact PR commit; source changes alone do not prove release or deployment acceptance.
+
+## Linux usb-boop preview
+
+- [ ] Confirm native x86_64/ARM64 formula source installation and tests on the final PR commit.
+- [ ] Confirm the unchanged signed Mac cask installation gate on the final PR commit.
+- [ ] Merge only after the upstream Linux support PR; no release is published by these changes.
+- Physical hardware and desktop-session acceptance remain documented upstream.
