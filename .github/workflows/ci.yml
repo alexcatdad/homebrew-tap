@@ -28,3 +28,45 @@ jobs:
           for file in Formula/*.rb Casks/*.rb; do
             ruby -c "$file"
           done
+
+  linux:
+    name: Linux formula (${{ matrix.runner }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: Homebrew/actions/setup-homebrew@fccef3b26268fc4a788fd7ad7c189f3a105cbf13
+      - name: Install candidate tap and verify formula
+        run: |
+          brew tap-new alexcatdad/candidate --no-git
+          cp -R Formula Casks "$(brew --repository alexcatdad/candidate)/"
+          brew style --formula alexcatdad/candidate/usb-boop
+          brew audit --strict --formula alexcatdad/candidate/usb-boop
+          brew install --build-from-source alexcatdad/candidate/usb-boop
+          brew test alexcatdad/candidate/usb-boop
+          usb-boop --version
+          usb-boop --fixtures --list --json
+
+  mac-cask:
+    name: Mac cask install
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install candidate cask
+        run: |
+          brew tap-new alexcatdad/candidate --no-git
+          cp -R Formula Casks "$(brew --repository alexcatdad/candidate)/"
+          brew style --cask alexcatdad/candidate/usb-boop
+          brew trust --cask alexcatdad/candidate/usb-boop
+          HOMEBREW_DEVELOPER=1 brew info --cask alexcatdad/candidate/usb-boop
+          brew install --cask alexcatdad/candidate/usb-boop
+          test -x /Applications/usb-boop.app/Contents/MacOS/usb-boop
+          codesign --verify --deep --strict /Applications/usb-boop.app
+          spctl --assess --type execute /Applications/usb-boop.app

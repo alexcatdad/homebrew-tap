@@ -39,3 +39,10 @@ Developer ID signing and the notarization Keychain profile are available on
 their Mac; future releases require that Mac and its signing access. No Apple
 credential export to this tap or GitHub Actions is required. Follow the
 [upstream release procedure](../docs/usb-boop-maintenance.md#local-signing-and-release-delivery).
+
+## Linux usb-boop preview
+
+Implementation and PR creation are authorized. PR merge and release publication
+remain outside this run. Physical hotplug/resume and GNOME/KDE observations require
+suitable hardware/sessions; record unavailable evidence upstream rather than
+claiming fixture/native CI coverage proves it.

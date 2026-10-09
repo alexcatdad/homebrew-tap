@@ -54,3 +54,22 @@ documentation transition changes no cask artifact or README version entry.
 mode loading pass. The old cask fails developer mode loading. Generator output
 matches the corrected cask byte for byte. No application release or reinstall
 is needed for this metadata change.
+
+## Linux formula
+
+`Formula/usb-boop.rb` builds the separate Qt 6/C++ Linux app on x86_64 and ARM64.
+It uses Homebrew Qt and libudev (provided by systemd); it never starts or replaces
+the host's systemd services. The Mac cask remains the signed Mac archive.
+Generate Linux entries with upstream `scripts/update_homebrew_tap.sh --linux`.
+
+The first formula is an unreleased `0.0.0-dev` preview pinned to an immutable
+Linux support PR commit and its source archive checksum. Merge it after the
+upstream app PR. Future published stable releases validate the DEB and RPM for
+both architectures before updating the formula to the tag's resolved commit
+archive. Formula and cask delivery are independent: a historical Mac-only release
+must not require Linux assets. Both entries reject downgrades and replacement of
+a published CalVer checksum. Keep all artifact publication in upstream workflows.
+
+Hosted formula installation and tests are source/package evidence, not claims of
+manual hardware, GNOME/KDE or physical ARM64 validation. Keep those observations
+in the upstream PR's validation record.
