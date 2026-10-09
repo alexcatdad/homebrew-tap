@@ -80,3 +80,9 @@ version output verification exact. Existing DEB/RPM verification accepts the
 correct version and rejects a near-matching version; a prefix-collision fixture
 is also rejected. Prior hosted app and tap candidates passed all gates on both
 Linux architectures and Mac; final pin checks remain required before merge.
+
+The dark-mode tray follow-up pins app `be1ca181`. Local Debug and sanitizer suites
+pass, including appearance selection, unknown preference fallback and alpha
+preservation. Actual KDE portal preference and tray pixmap evidence exists. The
+repinned tap must pass native formula installation/tests on both architectures
+and the unchanged Mac installation gate before the follow-up is complete.

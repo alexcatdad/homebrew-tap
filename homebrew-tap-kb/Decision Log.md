@@ -46,3 +46,12 @@ remains upstream-owned and independently gates the Linux and Mac entries. Expand
 hosted usb-boop checks to native Linux builds/installations on both architectures
 and signed Mac cask installation. See [CI checks](../docs/ci-checks.md) and
 [maintenance](../docs/usb-boop-maintenance.md#linux-formula).
+
+## 2026-10-09: Theme-aware Linux tray preview
+
+Repin the Linux preview to app `be1ca181`, which selects a white tray icon in dark
+appearance while retaining transparency, reads portal settings/changes and falls
+back to the palette for unavailable or unknown preferences. The running KDE tray
+registration and exported dark icon pixels were inspected on the coordinating
+machine; other desktops and physical hardware limits remain explicitly separate.
+See [app PR 17](https://github.com/alexcatdad/usb-boop/pull/17).
