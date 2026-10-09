@@ -66,3 +66,11 @@ verification workflow and delivered cask commit.
 - [ ] Confirm the unchanged signed Mac cask installation gate on the final PR commit.
 - [ ] Merge only after the upstream Linux support PR; no release is published by these changes.
 - Physical hardware and desktop-session acceptance remain documented upstream.
+
+Local validation for the final app candidate `598b69e`: generated source formula
+style/strict audit and workflow syntax/security lint pass. Native x86_64 Ubuntu
+24.04 (Qt 6.4.2) and Fedora 44 (Qt 6.11.2) build/test/package and clean runtime-only
+installation checks pass; Ubuntu X11/Wayland headless smoke passes. The final tap
+commit's hosted checks establish both architectures and signed Mac installation.
+See [app PR 17](https://github.com/alexcatdad/usb-boop/pull/17) and
+[tap PR 5](https://github.com/alexcatdad/homebrew-tap/pull/5) for exact commit checks.

@@ -1,9 +1,9 @@
 class UsbBoop < Formula
   desc "Desktop app that reports negotiated USB link speed"
   homepage "https://github.com/alexcatdad/usb-boop"
-  url "https://github.com/alexcatdad/usb-boop/archive/2cffcf97898522d21176046fc7a4dcd359f27305.tar.gz"
+  url "https://github.com/alexcatdad/usb-boop/archive/598b69eae07c445cce2869edecbb83825651ca46.tar.gz"
   version "0.0.0-dev"
-  sha256 "4cbcfa94558b3006bae397f965f9092c25de3dc7544f297f0106eff8b7051273"
+  sha256 "17b74f68cdf3143335069616e460d9da74f32267b220424b584281a8c9133aa1"
   license "MIT"
 
   depends_on "cmake" => :build
