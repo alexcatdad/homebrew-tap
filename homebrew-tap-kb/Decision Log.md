@@ -45,3 +45,7 @@ Add the existing upstream `pr-nanny` prerelease as a macOS ARM64 cask and Linux 
 ## 2026-10-20: Verified PR Nanny manifest updates
 
 Use the `Update PR Nanny package manifests` workflow to import a published upstream release, verify its exact source commit, checksum manifest, sidecars and build attestations, then open a tap PR with generated checksums. The one-time RC1 bootstrap is limited to its previously qualified source commit and identifies that release's missing attestations in the PR body. The workflow explicitly dispatches the tap CI on its generated branch because GitHub does not start PR checks for a PR created with `GITHUB_TOKEN`; tap CI parses all manifests and styles the PR Nanny formula and cask. Keep updates reviewable through pull requests. The upstream release workflow can dispatch this importer when a tap-scoped Actions token is configured; without it, maintainers can run the tap workflow manually.
+
+## 2026-10-20: PR Nanny install smoke checks
+
+Run the current PR Nanny cask install/uninstall on an isolated macOS ARM64 runner and the formula install/uninstall on Ubuntu 24.04 x64 with the documented runtime libraries present. Use a temporary local tap made from the checked-out manifests, so the checks validate the reviewed version without changing the public tap. These jobs confirm package download and Homebrew deployment/removal, not application launch, UI behavior, or credential-store operation.
