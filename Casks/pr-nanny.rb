@@ -1,8 +1,8 @@
 cask "pr-nanny" do
-  version "0.1.0-rc.3"
-  sha256 "09c7c7adb928b6102aaec5e37fb7d328b030a5154ceca2eb3d067e12521094f4"
+  version "0.1.0-rc.4"
+  sha256 "14fe9cf9eeff4fa6447e1ccfe71c388d4f588d7d9372fc742b8bf74a8f83297e"
 
-  url "https://github.com/alexcatdad/pr-nanny/releases/download/v0.1.0-rc.3/pr-nanny-0.1.0-rc.3-darwin-arm64.zip"
+  url "https://github.com/alexcatdad/pr-nanny/releases/download/v0.1.0-rc.4/pr-nanny-0.1.0-rc.4-darwin-arm64.zip"
   name "PR Nanny"
   desc "Passive GitHub pull-request monitor"
   homepage "https://github.com/alexcatdad/pr-nanny"

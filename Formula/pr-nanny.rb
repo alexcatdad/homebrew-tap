@@ -1,9 +1,9 @@
 class PrNanny < Formula
   desc "Passive GitHub pull-request monitor"
   homepage "https://github.com/alexcatdad/pr-nanny"
-  url "https://github.com/alexcatdad/pr-nanny/releases/download/v0.1.0-rc.3/pr-nanny-0.1.0-rc.3-linux-x64.tar.gz"
-  version "0.1.0-rc.3"
-  sha256 "08387bfa1630b8047d805276aa4b98bfb5811b4c912aed8ea38a943c2532ad79"
+  url "https://github.com/alexcatdad/pr-nanny/releases/download/v0.1.0-rc.4/pr-nanny-0.1.0-rc.4-linux-x64.tar.gz"
+  version "0.1.0-rc.4"
+  sha256 "a7713736388b8273f7e950e953bea39ce71c6703efd1d44085cda7d529208888"
   license "MIT"
 
   depends_on :linux
