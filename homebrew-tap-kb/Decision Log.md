@@ -49,3 +49,7 @@ Use the `Update PR Nanny package manifests` workflow to import a published upstr
 ## 2026-10-20: PR Nanny install smoke checks
 
 Run the current PR Nanny cask install/uninstall on an isolated macOS ARM64 runner and the formula install/uninstall on Ubuntu 24.04 x64 with the documented runtime libraries present. Use a temporary local tap made from the checked-out manifests, so the checks validate the reviewed version without changing the public tap. These jobs confirm package download and Homebrew deployment/removal, not application launch, UI behavior, or credential-store operation.
+
+## 2026-10-20: Signed PR Nanny macOS beta
+
+Select the locally Developer ID signed and notarised RC6 macOS archive through a reviewed cask-only change. Verify the archive checksum, trusted signing team, hardened runtime, stapled ticket and Gatekeeper acceptance before selecting it. Signing credentials stay in the maintainer's Keychain. The signed archive has its own checksum and transformation manifest; its original CI archive's attestation must not be presented as attesting the transformed ZIP. Preserve previous releases, the Linux formula and the existing all-platform attestation importer.

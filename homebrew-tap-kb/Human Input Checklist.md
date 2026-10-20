@@ -39,3 +39,7 @@ Developer ID signing and the notarization Keychain profile are available on
 their Mac; future releases require that Mac and its signing access. No Apple
 credential export to this tap or GitHub Actions is required. Follow the
 [upstream release procedure](../docs/usb-boop-maintenance.md#local-signing-and-release-delivery).
+
+## PR Nanny local signing
+
+The existing local Developer ID identity and notarisation profile were verified for this release. No Apple key export or GitHub signing secret is required.

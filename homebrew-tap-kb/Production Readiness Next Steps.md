@@ -67,3 +67,7 @@ verification workflow and delivered cask commit.
 - [x] Add a workflow that verifies qualified upstream release source, archive checksums and build attestations before proposing generated formula/cask updates.
 - [ ] Configure the upstream release workflow with a fine-grained token scoped to this tap and Actions: write to enable automatic dispatch; until then, run the tap workflow manually.
 - [ ] Track a signed/notarized macOS package separately from prerelease Homebrew syntax and checksum validation.
+
+## PR Nanny signed macOS beta
+
+RC6 cask delivery requires the published signed archive and matching checksum, Apple signature/ticket verification, and the exact-head tap checks. Installed-app launch and retained PAT authentication remain separate acceptance checks. The Linux formula stays on its existing qualified release.
