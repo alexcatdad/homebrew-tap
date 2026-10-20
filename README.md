@@ -8,13 +8,14 @@ Homebrew formulae for [alexcatdad](https://github.com/alexcatdad) tools.
 brew tap alexcatdad/tap
 ```
 
-## Formulae
+## Packages
 
 <!-- BEGIN FORMULAE -->
 | Formula | Version | Description |
 |---------|---------|-------------|
 | [paw-proxy](https://github.com/alexcatdad/paw-proxy) | 1.12.3 | Zero-config HTTPS proxy for local macOS development |
 | [paw](https://github.com/alexcatdad/paw) | 0.5.0 | Personal dotfiles manager CLI |
+| [pr-nanny](https://github.com/alexcatdad/pr-nanny) | 0.1.0-rc.1 | Passive GitHub pull-request monitor (macOS ARM64 cask, Linux x64 formula) |
 | [scratchpad-mcp](https://github.com/alexcatdad/scratchpad-mcp) | 0.3.0 | Private project memory for developers and coding agents |
 | [usb-boop](https://github.com/alexcatdad/usb-boop) | 2026.09.17.5 | Menu bar app that reports negotiated USB link speed (cask) |
 <!-- END FORMULAE -->
@@ -25,6 +26,10 @@ brew tap alexcatdad/tap
 ```bash
 brew install alexcatdad/tap/paw-proxy
 brew install alexcatdad/tap/paw
+# macOS ARM64
+brew install --cask alexcatdad/tap/pr-nanny
+# Linux x64
+brew install alexcatdad/tap/pr-nanny
 brew install alexcatdad/tap/scratchpad-mcp
 brew install --cask alexcatdad/tap/usb-boop
 ```

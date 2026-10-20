@@ -37,3 +37,7 @@ quarantine bypass. Both upstream verification and tap delivery passed; see
 ## 2026-10-08: Public hosted CI
 
 Run Ruby syntax checks for all formulae and casks on GitHub-hosted macOS for pull requests and main pushes. Keep artifact download, installation and signing verification in existing upstream release procedures. No homelab runner or package installation is part of this gate. See [CI checks](../docs/ci-checks.md).
+
+## 2026-10-20: PR Nanny prerelease packages
+
+Add the existing upstream `pr-nanny` prerelease as a macOS ARM64 cask and Linux x64 formula using the exact RC1 archive URLs and verified SHA256 values. Keep Windows distribution on the upstream release page. The prerelease is ad-hoc signed on macOS and Linux needs system GTK4, WebKitGTK 6, Secret Service and glibc 2.39+. Later versions update these entries through a reviewed tap change; this initial package entry does not claim installed-system acceptance.

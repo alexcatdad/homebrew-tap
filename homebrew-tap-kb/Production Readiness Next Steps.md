@@ -59,3 +59,9 @@ verification workflow and delivered cask commit.
 ## Hosted source checks
 
 [CI checks](../docs/ci-checks.md) now define the reproducible source gate. Hosted acceptance is established by the checks on the exact PR commit; source changes alone do not prove release or deployment acceptance.
+
+## PR Nanny prerelease
+
+- [ ] Merge the RC1 formula and cask only after hosted Ruby syntax checks pass.
+- [ ] Replace both package versions and archive hashes through a reviewed tap change for later upstream releases.
+- [ ] Track a signed/notarized macOS package separately from prerelease Homebrew syntax and checksum validation.
