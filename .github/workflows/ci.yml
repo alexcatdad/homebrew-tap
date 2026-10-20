@@ -32,3 +32,96 @@ jobs:
           done
       - name: Style PR Nanny manifests
         run: brew style Casks/pr-nanny.rb Formula/pr-nanny.rb
+
+  install-cask:
+    name: PR Nanny cask install and uninstall
+    runs-on: macos-15
+    timeout-minutes: 20
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Verify Homebrew and Apple Silicon runner
+        run: |
+          set -euo pipefail
+          if [ "$(uname -m)" != arm64 ]; then
+            echo "The PR Nanny cask requires the macos-15 ARM64 runner." >&2
+            exit 1
+          fi
+          if ! command -v brew >/dev/null 2>&1; then
+            echo "Homebrew is not available on this runner; the job does not install it." >&2
+            exit 1
+          fi
+          brew --version
+      - name: Create an isolated local tap from the checked-out cask
+        run: |
+          set -euo pipefail
+          tap_source="$RUNNER_TEMP/pr-nanny-tap"
+          mkdir -p "$tap_source/Casks" "$tap_source/Formula"
+          cp Casks/pr-nanny.rb "$tap_source/Casks/pr-nanny.rb"
+          git -C "$tap_source" init -b main
+          git -C "$tap_source" config user.name "Homebrew CI"
+          git -C "$tap_source" config user.email "ci@example.invalid"
+          git -C "$tap_source" add Casks/pr-nanny.rb
+          git -C "$tap_source" commit -m "Prepare cask smoke test"
+          brew tap alexcatdad/tap "$tap_source"
+      - name: Install and uninstall only the PR Nanny cask
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/Applications"
+          brew install --cask --appdir="$RUNNER_TEMP/Applications" alexcatdad/tap/pr-nanny
+          test -d "$RUNNER_TEMP/Applications/PR Nanny.app"
+          brew uninstall --cask alexcatdad/tap/pr-nanny
+          test ! -e "$RUNNER_TEMP/Applications/PR Nanny.app"
+
+  install-formula:
+    name: PR Nanny formula install and uninstall
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Verify preinstalled Linux Homebrew
+        run: |
+          if [ ! -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+            echo "Homebrew is not preinstalled on this runner; the job does not install it." >&2
+            exit 1
+          fi
+          /home/linuxbrew/.linuxbrew/bin/brew --version
+      - name: Install the formula's documented runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            dbus-x11 \
+            gnome-keyring \
+            libgtk-4-1 \
+            libsecret-1-0 \
+            libwebkitgtk-6.0-4
+      - name: Create an isolated local tap from the checked-out formula
+        run: |
+          set -euo pipefail
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          tap_source="$RUNNER_TEMP/pr-nanny-tap"
+          mkdir -p "$tap_source/Casks" "$tap_source/Formula"
+          cp Formula/pr-nanny.rb "$tap_source/Formula/pr-nanny.rb"
+          git -C "$tap_source" init -b main
+          git -C "$tap_source" config user.name "Homebrew CI"
+          git -C "$tap_source" config user.email "ci@example.invalid"
+          git -C "$tap_source" add Formula/pr-nanny.rb
+          git -C "$tap_source" commit -m "Prepare formula smoke test"
+          brew tap alexcatdad/tap "$tap_source"
+          brew install alexcatdad/tap/pr-nanny
+          brew test alexcatdad/tap/pr-nanny
+          binary="$(brew --prefix alexcatdad/tap/pr-nanny)/bin/pr-nanny"
+          test -x "$binary"
+          brew uninstall alexcatdad/tap/pr-nanny
+          test ! -e "$binary"
