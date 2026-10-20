@@ -14,9 +14,7 @@ on:
         type: boolean
 
 permissions:
-  contents: write
-  pull-requests: write
-  attestations: read
+  contents: read
 
 concurrency:
   group: pr-nanny-tap-${{ inputs.release_tag }}
@@ -26,6 +24,11 @@ jobs:
   update:
     runs-on: macos-15
     timeout-minutes: 20
+    permissions:
+      actions: write
+      attestations: read
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -53,6 +56,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.release_tag }}
+          BOOTSTRAP_RC1: ${{ inputs.bootstrap_rc1 }}
         run: |
           version=${RELEASE_TAG#v}
           branch="automation/pr-nanny-$version"
@@ -71,8 +75,14 @@ jobs:
           fi
           git commit -m "Update PR Nanny to $version"
           git push origin "$branch"
+          if [ "$BOOTSTRAP_RC1" = true ]; then
+            body="One-time RC1 bootstrap from pinned, previously qualified source commit 4697f8b025a3cc86615a126d7983997c460e7ce4. The RC1 release has no build attestations; this workflow verified its SHA256SUMS manifest, archive sidecars and source commit."
+          else
+            body="Updates the PR Nanny Homebrew manifests from $RELEASE_TAG. The workflow verified the exact source commit, release checksums and all three build attestations from the upstream CI workflow."
+          fi
           gh pr create \
             --title "Update PR Nanny to $version" \
-            --body "Updates the PR Nanny Homebrew manifests from the verified upstream release $RELEASE_TAG. The workflow checks the source commit, release checksums, and build attestations before proposing the change." \
+            --body "$body" \
             --base main \
             --head "$branch"
+          gh workflow run ci.yml --ref "$branch"
