@@ -12,7 +12,8 @@ cask "pr-nanny" do
 
   app "PR Nanny.app"
 
-  def caveats
-    "This prerelease is ad-hoc signed and not notarized. macOS may show a security prompt when you first open it."
-  end
+  caveats <<~EOS
+    This prerelease is ad-hoc signed and not notarized.
+    macOS may show a security prompt when you first open it.
+  EOS
 end

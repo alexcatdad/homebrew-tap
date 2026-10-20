@@ -63,5 +63,6 @@ verification workflow and delivered cask commit.
 ## PR Nanny prerelease
 
 - [ ] Merge the RC1 formula and cask only after hosted Ruby syntax checks pass.
-- [ ] Replace both package versions and archive hashes through a reviewed tap change for later upstream releases.
+- [x] Add a workflow that verifies qualified upstream release source, archive checksums and build attestations before proposing generated formula/cask updates.
+- [ ] Configure the upstream release workflow with a fine-grained token scoped to this tap and Actions: write to enable automatic dispatch; until then, run the tap workflow manually.
 - [ ] Track a signed/notarized macOS package separately from prerelease Homebrew syntax and checksum validation.

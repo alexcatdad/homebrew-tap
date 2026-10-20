@@ -1,0 +1,78 @@
+name: Update PR Nanny package manifests
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Qualified PR Nanny release tag, such as v0.1.0-rc.2
+        required: true
+        type: string
+      bootstrap_rc1:
+        description: Permit the one-time verified RC1 import without attestations
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+  attestations: read
+
+concurrency:
+  group: pr-nanny-tap-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Import and verify upstream release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          BOOTSTRAP_RC1: ${{ inputs.bootstrap_rc1 }}
+        run: |
+          gh --version
+          if [ "$BOOTSTRAP_RC1" = true ]; then
+            sh scripts/update-pr-nanny.sh "$RELEASE_TAG" --bootstrap-rc1
+          else
+            sh scripts/update-pr-nanny.sh "$RELEASE_TAG"
+          fi
+      - name: Check generated manifests
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+        run: |
+          ruby -c Casks/pr-nanny.rb
+          ruby -c Formula/pr-nanny.rb
+          brew style Casks/pr-nanny.rb Formula/pr-nanny.rb
+      - name: Open reviewed manifest update
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          version=${RELEASE_TAG#v}
+          branch="automation/pr-nanny-$version"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "An update branch already exists for $RELEASE_TAG; leaving it unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          gh auth setup-git
+          git checkout -b "$branch"
+          git add Casks/pr-nanny.rb Formula/pr-nanny.rb README.md
+          if git diff --cached --quiet; then
+            echo "The tap already matches $RELEASE_TAG."
+            exit 0
+          fi
+          git commit -m "Update PR Nanny to $version"
+          git push origin "$branch"
+          gh pr create \
+            --title "Update PR Nanny to $version" \
+            --body "Updates the PR Nanny Homebrew manifests from the verified upstream release $RELEASE_TAG. The workflow checks the source commit, release checksums, and build attestations before proposing the change." \
+            --base main \
+            --head "$branch"

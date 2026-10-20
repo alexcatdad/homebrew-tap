@@ -18,7 +18,7 @@ The running list of tasks that require a real human to provide access, credentia
 
 ## Credentials And Access
 
-- [ ] Record any credentials, secrets, or account access still needed
+- [ ] To let the upstream PR Nanny release workflow dispatch tap updates automatically, add a fine-grained token as `HOMEBREW_TAP_ACTIONS_TOKEN` in `alexcatdad/pr-nanny`. Scope it only to `alexcatdad/homebrew-tap` with Actions: write. The tap workflow uses its repository `GITHUB_TOKEN` for the reviewed PR; no tap secret is required.
 
 ## Environment And Tooling Decisions
 

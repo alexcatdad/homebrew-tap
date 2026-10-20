@@ -41,3 +41,7 @@ Run Ruby syntax checks for all formulae and casks on GitHub-hosted macOS for pul
 ## 2026-10-20: PR Nanny prerelease packages
 
 Add the existing upstream `pr-nanny` prerelease as a macOS ARM64 cask and Linux x64 formula using the exact RC1 archive URLs and verified SHA256 values. Keep Windows distribution on the upstream release page. The prerelease is ad-hoc signed on macOS and Linux needs system GTK4, WebKitGTK 6, Secret Service and glibc 2.39+. Later versions update these entries through a reviewed tap change; this initial package entry does not claim installed-system acceptance.
+
+## 2026-10-20: Verified PR Nanny manifest updates
+
+Use the `Update PR Nanny package manifests` workflow to import a published upstream release, verify its exact source commit, checksum manifest, sidecars and build attestations, then open a tap PR with generated checksums. The one-time RC1 bootstrap is limited to its previously qualified source commit. Keep updates reviewable through pull requests. The upstream release workflow can dispatch this importer when a tap-scoped Actions token is configured; without it, maintainers can run the tap workflow manually.
