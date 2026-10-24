@@ -50,11 +50,13 @@ The package file is `Formula/<package>.rb` or `Casks/<package>.rb`. Each
 `url`/`sha256` pair in it is a slot. A slot is matched to the asset whose file
 name equals the slot's file name once the old and new version/tag are
 normalised, so `tool-v1.2.3-darwin-arm64.zip` pairs with
-`tool-v2026.10.1-darwin-arm64.zip`. Every slot must match exactly one asset and
-every asset must be used (multi-file packages such as paw-proxy's `up` binary
-and man pages are separate assets). Where a slot sits inside `on_macos`,
+`tool-v2026.10.1-darwin-arm64.zip`. Every slot must match exactly one asset (a missing one is exit 2).
+Assets that no slot uses are allowed (apps publish more files than a formula
+installs) and are reported one per line on stderr as `ignored asset: <file>`;
+they do not change the exit code. File names without a version, such as
+`paw-proxy-darwin-arm64` under a new tag, match by identical name. Where a slot sits inside `on_macos`,
 `on_linux`, `on_arm` or `on_intel`, the asset's `os`/`arch` must agree.
-A release that renames its files or adds/removes a platform is rejected (exit 2)
+A release that renames a file the package installs, or drops a platform it covers, is rejected (exit 2)
 and needs a deliberate manual edit of the package file. Only `version`, `url`
 and `sha256` lines change; the result must pass `ruby -c` before it is written.
 Slots with interpolated URLs (`#{version}`) are unsupported.
@@ -64,7 +66,7 @@ Slots with interpolated URLs (`#{version}`) are unsupported.
 | Code | Meaning |
 |------|---------|
 | 0 | Applied, or already identical (tree unchanged) |
-| 2 | Invalid input: schema, URL prefix, hashes, cask with non-darwin assets, unknown package or package not owned by `app`, assets that do not fit the package file |
+| 2 | Invalid input: schema, URL prefix, hashes, cask with non-darwin assets, unknown package or package not owned by `app`, a package slot with no matching asset |
 | 3 | Regression: the package already has a newer version |
 | 4 | Same version already present with different URLs or hashes |
 | other | Failure (unreadable file, unsupported layout, syntax check failed) |

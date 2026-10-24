@@ -182,10 +182,13 @@ def run(path)
     unmatched.delete(a)
     pairs << [s, a]
   end
-  invalid("assets not used by the package: #{unmatched.map { |a| basename(a['url']) }.join(', ')}") unless unmatched.empty?
+  ignored = unmatched.map { |a| "ignored asset: #{basename(a['url'])}" }
 
   identical = pairs.all? { |s, a| s.url == a["url"] && s.sha == a["sha256"] } && cmp.zero? && old_version == doc["version"]
-  return 0 if identical
+  if identical
+    ignored.each { |l| warn l }
+    return 0
+  end
   raise Fail.new(4, "#{file} already at #{old_version} with different urls or hashes") if cmp.zero?
 
   out = lines.dup
@@ -205,6 +208,7 @@ def run(path)
   tmp = "#{file}.tmp.#{Process.pid}"
   File.write(tmp, result)
   File.rename(tmp, file)
+  ignored.each { |l| warn l }
   0
 end
 
