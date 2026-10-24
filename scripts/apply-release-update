@@ -1,0 +1,220 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Applies a release-tools/tap-update/v1 document to one formula or cask.
+# Edits files in the working tree only; never commits or pushes.
+#
+# Usage: scripts/apply-release-update <update.json>   (run from the tap root)
+# Exit codes: 0 applied or identical, 2 invalid input, 3 version regression,
+#             4 same version with different assets, 1 any other failure.
+
+require "json"
+require "tempfile"
+
+class Fail < StandardError
+  attr_reader :code
+
+  def initialize(code, msg)
+    super(msg)
+    @code = code
+  end
+end
+
+SCHEMA = "release-tools/tap-update/v1"
+OSES = %w[darwin linux].freeze
+ARCHES = %w[arm64 amd64 universal].freeze
+ASSET_KINDS = %w[binary tar.gz zip dmg pkg rpm].freeze
+# Packages each application owns. Anything else is rejected as unknown.
+OWNERS = {
+  "scratchpad" => [%w[formula scratchpad-mcp]],
+  "usb-boop" => [%w[cask usb-boop]],
+  "pr-nanny" => [%w[formula pr-nanny], %w[cask pr-nanny]],
+  "paw-proxy" => [%w[formula paw-proxy]],
+}.freeze
+
+def invalid(msg)
+  raise Fail.new(2, msg)
+end
+
+def numeric_parts(version)
+  core = version.to_s.sub(/\Av/, "").split(/[-+]/, 2).first.to_s
+  parts = core.split(".")
+  return nil if parts.empty? || parts.any? { |p| p !~ /\A\d+\z/ }
+
+  parts.map(&:to_i)
+end
+
+def compare(a, b)
+  n = [a.length, b.length].max
+  (a + [0] * (n - a.length)) <=> (b + [0] * (n - b.length))
+end
+
+def validate(doc)
+  invalid("input is not a JSON object") unless doc.is_a?(Hash)
+  invalid("unsupported schema") unless doc["schema"] == SCHEMA
+  %w[app kind package version tag repo].each do |k|
+    invalid("missing or empty field: #{k}") unless doc[k].is_a?(String) && !doc[k].empty?
+  end
+  invalid("kind must be formula or cask") unless %w[formula cask].include?(doc["kind"])
+  invalid("version must be dotted numeric") unless doc["version"] =~ /\A\d+(\.\d+)+\z/
+  invalid("tag must be the version, optionally prefixed with v") unless [doc["version"], "v#{doc['version']}"].include?(doc["tag"])
+  invalid("repo must be owner/name") unless doc["repo"] =~ %r{\A[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\z}
+  unless (OWNERS[doc["app"]] || []).include?([doc["kind"], doc["package"]])
+    invalid("unknown package #{doc['kind']} #{doc['package']} for app #{doc['app']}")
+  end
+  assets = doc["assets"]
+  invalid("assets must be a non-empty array") unless assets.is_a?(Array) && !assets.empty?
+  prefix = "https://github.com/#{doc['repo']}/releases/download/#{doc['tag']}/"
+  seen = {}
+  assets.each do |a|
+    invalid("asset is not an object") unless a.is_a?(Hash)
+    invalid("invalid asset os") unless OSES.include?(a["os"])
+    invalid("invalid asset arch") unless ARCHES.include?(a["arch"])
+    invalid("invalid asset kind") unless ASSET_KINDS.include?(a["kind"])
+    invalid("asset url must start with #{prefix}") unless a["url"].is_a?(String) && a["url"].start_with?(prefix)
+    name = a["url"][prefix.length..-1]
+    invalid("asset url has an invalid file name") unless name =~ /\A[A-Za-z0-9._+-]+\z/
+    invalid("asset sha256 must be 64 lowercase hex characters") unless a["sha256"].is_a?(String) && a["sha256"] =~ /\A[0-9a-f]{64}\z/
+    invalid("cask assets must be darwin") if doc["kind"] == "cask" && a["os"] != "darwin"
+    invalid("duplicate asset url") if seen[a["url"]]
+    seen[a["url"]] = true
+  end
+end
+
+# A url/sha256 pair inside a formula or cask, with its enclosing platform.
+Slot = Struct.new(:url_line, :sha_line, :url, :sha, :os, :arch)
+
+def parse_slots(lines, kind)
+  blocks = [{ id: 0, os: nil, arch: nil, urls: [], shas: [] }]
+  all = [blocks[0]]
+  stack = [blocks[0]]
+  lines.each_with_index do |line, i|
+    cur = stack.last
+    if line =~ /\A\s*on_(macos|linux|arm|intel)\s+do\s*\z/
+      b = { id: all.length, os: cur[:os], arch: cur[:arch], urls: [], shas: [] }
+      case Regexp.last_match(1)
+      when "macos" then b[:os] = "darwin"
+      when "linux" then b[:os] = "linux"
+      when "arm" then b[:arch] = "arm64"
+      when "intel" then b[:arch] = "amd64"
+      end
+      all << b
+      stack.push(b)
+    elsif line =~ /\bdo\s*(\|[^|]*\|)?\s*\z/
+      b = { id: all.length, os: cur[:os], arch: cur[:arch], urls: [], shas: [], nested_ctx: false }
+      all << b
+      stack.push(b)
+    elsif line =~ /\A\s*end\s*\z/
+      stack.pop if stack.length > 1
+    elsif line =~ /\A\s*url\s+"([^"]*)"/
+      cur[:urls] << [i, Regexp.last_match(1)]
+    elsif line =~ /\A\s*sha256\s+"([0-9a-f]{64})"/
+      cur[:shas] << [i, Regexp.last_match(1)]
+    end
+  end
+  slots = []
+  all.each do |b|
+    next if b[:urls].empty? && b[:shas].empty?
+    raise Fail.new(1, "unsupported layout: url/sha256 count mismatch") unless b[:urls].length == b[:shas].length
+
+    b[:urls].zip(b[:shas]).each do |(ui, url), (si, sha)|
+      raise Fail.new(1, "unsupported layout: interpolated url") if url.include?("\#{")
+
+      os = b[:os] || (kind == "cask" ? "darwin" : nil)
+      slots << Slot.new(ui, si, url, sha, os, b[:arch])
+    end
+  end
+  slots
+end
+
+def current_version(lines)
+  line = lines.find { |l| l =~ /\A\s{0,2}version\s+"([^"]+)"/ }
+  raise Fail.new(1, "no version line found in package file") unless line
+  line[/"([^"]+)"/, 1]
+end
+
+def basename(url)
+  url.split("/").last
+end
+
+def normalize(url, version, tag)
+  basename(url).gsub(tag, "@T@").gsub(version, "@V@")
+end
+
+def run(path)
+  doc = begin
+    JSON.parse(File.read(path))
+  rescue Errno::ENOENT, JSON::ParserError => e
+    invalid("cannot read input: #{e.class}")
+  end
+  validate(doc)
+
+  dir = doc["kind"] == "cask" ? "Casks" : "Formula"
+  file = File.join(dir, "#{doc['package']}.rb")
+  invalid("package file not found: #{file}") unless File.file?(file)
+  original = File.read(file)
+  lines = original.lines.map(&:chomp)
+  old_version = current_version(lines)
+
+  new_nums = numeric_parts(doc["version"])
+  old_nums = numeric_parts(old_version)
+  raise Fail.new(1, "cannot parse existing version #{old_version}") unless old_nums
+  cmp = compare(new_nums, old_nums)
+  raise Fail.new(3, "regression: #{file} is at #{old_version}, refusing #{doc['version']}") if cmp < 0
+
+  slots = parse_slots(lines, doc["kind"])
+  raise Fail.new(1, "no url/sha256 pairs found in #{file}") if slots.empty?
+
+  old_tag = nil
+  slots.each do |s|
+    old_tag ||= s.url[%r{/releases/download/([^/]+)/}, 1]
+  end
+  old_tag ||= old_version
+  assets = doc["assets"].map { |a| a.merge("norm" => normalize(a["url"], doc["version"], doc["tag"])) }
+  pairs = []
+  unmatched = assets.dup
+  slots.each do |s|
+    norm = normalize(s.url, old_version, old_tag)
+    a = unmatched.find { |x| x["norm"] == norm }
+    invalid("no asset for package url #{basename(s.url)}") unless a
+    invalid("asset os #{a['os']} does not match package platform #{s.os}") if s.os && a["os"] != s.os
+    invalid("asset arch #{a['arch']} does not match package platform #{s.arch}") if s.arch && a["arch"] != s.arch && a["arch"] != "universal"
+    unmatched.delete(a)
+    pairs << [s, a]
+  end
+  invalid("assets not used by the package: #{unmatched.map { |a| basename(a['url']) }.join(', ')}") unless unmatched.empty?
+
+  identical = pairs.all? { |s, a| s.url == a["url"] && s.sha == a["sha256"] } && cmp.zero? && old_version == doc["version"]
+  return 0 if identical
+  raise Fail.new(4, "#{file} already at #{old_version} with different urls or hashes") if cmp.zero?
+
+  out = lines.dup
+  pairs.each do |s, a|
+    out[s.url_line] = out[s.url_line].sub(s.url, a["url"])
+    out[s.sha_line] = out[s.sha_line].sub(s.sha, a["sha256"])
+  end
+  vi = out.index { |l| l =~ /\A\s{0,2}version\s+"#{Regexp.escape(old_version)}"/ }
+  out[vi] = out[vi].sub(old_version, doc["version"])
+  result = out.join("\n") + (original.end_with?("\n") ? "\n" : "")
+
+  Tempfile.create(["apply-release-update", ".rb"]) do |t|
+    t.write(result)
+    t.flush
+    raise Fail.new(1, "result of #{file} failed ruby -c") unless system("ruby", "-c", t.path, out: File::NULL, err: File::NULL)
+  end
+  tmp = "#{file}.tmp.#{Process.pid}"
+  File.write(tmp, result)
+  File.rename(tmp, file)
+  0
+end
+
+begin
+  abort("usage: apply-release-update <update.json>") unless ARGV.length == 1
+  exit run(ARGV[0])
+rescue Fail => e
+  warn "apply-release-update: #{e.message}"
+  exit e.code
+rescue StandardError => e
+  warn "apply-release-update: #{e.class}: #{e.message}"
+  exit 1
+end
