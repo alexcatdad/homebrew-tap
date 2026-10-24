@@ -53,3 +53,7 @@ Run the current PR Nanny cask install/uninstall on an isolated macOS ARM64 runne
 ## 2026-10-20: Signed PR Nanny macOS beta
 
 Select the locally Developer ID signed and notarised RC6 macOS archive through a reviewed cask-only change. Verify the archive checksum, trusted signing team, hardened runtime, stapled ticket and Gatekeeper acceptance before selecting it. Signing credentials stay in the maintainer's Keychain. The signed archive has its own checksum and transformation manifest; its original CI archive's attestation must not be presented as attesting the transformed ZIP. Preserve previous releases, the Linux formula and the existing all-platform attestation importer.
+
+## 2026-10-24: Local release updater, validation-only CI
+
+Tap package updates are applied by `scripts/apply-release-update` from a `release-tools/tap-update/v1` document, run by the local release tool after a release is published and verified; the updater edits the tree only and the tool commits and pushes. The CI tap writer (`update-pr-nanny.yml`) is removed and all workflows are validation-only. Open mapping choices (`paw` vs `paw-proxy`, pr-nanny formula plus cask) are listed in [local release updates](../docs/local-release-updates.md).
