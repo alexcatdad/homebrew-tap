@@ -30,6 +30,8 @@ jobs:
           for file in Formula/*.rb Casks/*.rb; do
             ruby -c "$file"
           done
+      - name: Test the local release updater against synthetic fixtures
+        run: sh tests/run.sh
       - name: Style PR Nanny manifests
         run: brew style Casks/pr-nanny.rb Formula/pr-nanny.rb
 
