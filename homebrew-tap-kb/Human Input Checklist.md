@@ -43,3 +43,9 @@ credential export to this tap or GitHub Actions is required. Follow the
 ## PR Nanny local signing
 
 The existing local Developer ID identity and notarisation profile were verified for this release. No Apple key export or GitHub signing secret is required.
+
+## Local release updater decisions
+
+- [ ] Decide the open package-mapping questions in [local release updates](../docs/local-release-updates.md#decisions-needed) (`paw`, pr-nanny formula plus cask, scratchpad cask, README table, legacy script).
+- [ ] Retire the tap GitHub App installation and its secrets (manual owner step).
+- [ ] Accept the updater with a real release; only synthetic fixtures are tested so far.

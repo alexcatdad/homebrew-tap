@@ -13,3 +13,5 @@ HOMEBREW_NO_AUTO_UPDATE=1 brew style Casks/pr-nanny.rb Formula/pr-nanny.rb
 ```
 
 Local syntax checking does not prove package installation or application behavior. Hosted install/uninstall checks verify Homebrew's archive download checksum and package deployment/removal. They do not prove application launch, UI behavior, or Secret Service use. The existing upstream release verification and [usb-boop maintenance procedure](usb-boop-maintenance.md) remain the release gate.
+
+The syntax job also runs `sh tests/run.sh`, which exercises the local release updater against synthetic fixtures. See [local release updates](local-release-updates.md). Workflows in this repository are validation-only.
