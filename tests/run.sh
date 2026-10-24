@@ -29,6 +29,7 @@ run_case() {
   printf '%s' "$json" > "$tap/update.json"
   err=$(cd "$tap" && "$tool" update.json 2>&1 >/dev/null)
   got=$?
+  printf '%s\n' "$err" > "$tap/err"
   if [ "$got" -eq "$want" ]; then
     pass=$((pass + 1)); echo "ok   $name"
   else
@@ -119,11 +120,32 @@ run_case "unknown package exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#"packag
 run_case "package owned by another app exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#"app":"usb-boop"#"app":"paw-proxy"#')"
 run_case "not json exits 2" 2 'not json'
 run_case "incomplete scratchpad assets exits 2" 2 "$(scratch_json 2026.10.1 | sed '/darwin","arch":"arm64"/d')"
-run_case "unused extra asset exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#}\]}#},{"os":"darwin","arch":"amd64","kind":"zip","url":"https://github.com/example-org/usb-boop/releases/download/v2026.10.1/extra.zip","sha256":"'$H2'"}]}#')"
+fresh
+run_case "unused extra asset is ignored" 0 "$(cask_json 2026.10.1 $H1 | sed 's#}\]}#},{"os":"darwin","arch":"amd64","kind":"zip","url":"https://github.com/example-org/usb-boop/releases/download/v2026.10.1/extra.zip","sha256":"'$H2'"}]}#')"
+check "extra asset reported" grep -q "^ignored asset: extra.zip$" "$tap/err"
+
+# unversioned names (same file name, new tag) with extra linux/universal assets
+fresh
+P=$U/paw-proxy/releases/download/v2026.10.1
+run_case "paw-proxy unversioned names, extras ignored" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"formula","package":"paw-proxy","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/paw-proxy","assets":[
+{"os":"darwin","arch":"arm64","kind":"binary","url":"%s/paw-proxy-darwin-arm64","sha256":"%s"},
+{"os":"darwin","arch":"arm64","kind":"binary","url":"%s/up-darwin-arm64","sha256":"%s"},
+{"os":"darwin","arch":"amd64","kind":"binary","url":"%s/paw-proxy-darwin-amd64","sha256":"%s"},
+{"os":"darwin","arch":"amd64","kind":"binary","url":"%s/up-darwin-amd64","sha256":"%s"},
+{"os":"darwin","arch":"universal","kind":"tar.gz","url":"%s/man-pages.tar.gz","sha256":"%s"},
+{"os":"linux","arch":"arm64","kind":"binary","url":"%s/paw-proxy-linux-arm64","sha256":"%s"},
+{"os":"linux","arch":"amd64","kind":"binary","url":"%s/paw-proxy-linux-amd64","sha256":"%s"},
+{"os":"darwin","arch":"universal","kind":"binary","url":"%s/paw-proxy-darwin-universal","sha256":"%s"}]}' "$P" $H1 "$P" $H2 "$P" $H3 "$P" $H4 "$P" $H5 "$P" $H1 "$P" $H1 "$P" $H1)"
+check "slots updated to new tag" grep -q "download/v2026.10.1/paw-proxy-darwin-arm64" "$tap/Formula/paw-proxy.rb"
+check "old tag gone" sh -c "! grep -q v1.12.3 '$tap/Formula/paw-proxy.rb'"
+check "linux extra reported" grep -q "^ignored asset: paw-proxy-linux-arm64$" "$tap/err"
+check "universal extra reported" grep -q "^ignored asset: paw-proxy-darwin-universal$" "$tap/err"
+check "paw-proxy parses" ruby -c "$tap/Formula/paw-proxy.rb"
+fresh
 
 # 8. cask with a linux asset
 run_case "cask with linux asset exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#"os":"darwin"#"os":"linux"#')"
-rm -f "$tap/update.json"
+rm -f "$tap/update.json" "$tap/err"
 check "invalid input leaves tree unchanged" diff -r "$root/tests/fixtures" "$tap"
 
 echo "passed: $pass, failed: $fail"
