@@ -80,7 +80,7 @@ prefix and any pre-release suffix, so `0.3.0` < `1.12.3` < `2026.9.17.5` <
 
 | App | Owned entries | Platforms |
 |-----|---------------|-----------|
-| scratchpad | `Formula/scratchpad-mcp.rb` | macOS arm64/amd64, Linux arm64/amd64. No cask. |
+| scratchpad | `Casks/scratchpad.rb` | macOS arm64 only. `Formula/scratchpad-mcp.rb` is deprecated and no longer updated. |
 | usb-boop | `Casks/usb-boop.rb` | macOS arm64 only |
 | pr-nanny | `Casks/pr-nanny.rb` (macOS arm64), `Formula/pr-nanny.rb` (Linux x64) | separate documents per kind |
 | paw-proxy | `Formula/paw-proxy.rb` | macOS arm64/amd64 |
@@ -101,7 +101,7 @@ No package is renamed or removed by this change.
    macOS arm64 cask) and are updated by separate documents. Choose: keep both
    (current behaviour) or retire the formula. If the Linux package is kept, its
    releases must keep publishing a `linux-x64.tar.gz` asset.
-3. scratchpad has no cask. Confirm a formula-only package is intended.
+3. Decided 2026-10-30: scratchpad ships the app cask; the MCP formula is deprecated.
 4. `scripts/update-pr-nanny.sh` was the helper for the deleted workflow. It is
    kept and unreferenced; remove it once the local task is accepted.
 5. The README package table is not touched by the updater (only the named

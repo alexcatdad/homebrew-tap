@@ -57,3 +57,7 @@ Select the locally Developer ID signed and notarised RC6 macOS archive through a
 ## 2026-10-24: Local release updater, validation-only CI
 
 Tap package updates are applied by `scripts/apply-release-update` from a `release-tools/tap-update/v1` document, run by the local release tool after a release is published and verified; the updater edits the tree only and the tool commits and pushes. The CI tap writer (`update-pr-nanny.yml`) is removed and all workflows are validation-only. Open mapping choices (`paw` vs `paw-proxy`, pr-nanny formula plus cask) are listed in [local release updates](../docs/local-release-updates.md).
+
+## 2026-10-30: Scratchpad app cask replaces the MCP formula
+
+Scratchpad releases now publish one signed, notarised macOS ARM64 app archive and update `Casks/scratchpad.rb`; the updater maps the `scratchpad` application to that cask only. `Formula/scratchpad-mcp.rb` stays at its last version, deprecated with `replacement_cask: "scratchpad"`, and receives no further releases. The cask uses no Ruby hooks, which Homebrew 7 rejects; after an upgrade the running capture service switches to the new version on Stop/Start or the next login, as stated in its caveats. The cask lands at a placeholder version and must be merged immediately before the first Scratchpad app release, which rewrites it.
