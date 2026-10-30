@@ -51,14 +51,8 @@ U=https://github.com/example-org
 cask_json() { # version sha
   printf '{"schema":"release-tools/tap-update/v1","app":"usb-boop","kind":"cask","package":"usb-boop","version":"%s","tag":"v%s","repo":"example-org/usb-boop","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/usb-boop/releases/download/v%s/usb-boop-macos-arm64.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$2"
 }
-scratch_json() { # version [sha-for-darwin-arm64]
-  v=$1
-  printf '{"schema":"release-tools/tap-update/v1","app":"scratchpad","kind":"formula","package":"scratchpad-mcp","version":"%s","tag":"v%s","repo":"example-org/scratchpad","assets":[
-{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/scratchpad/releases/download/v%s/scratchpad-mcp-v%s-darwin-arm64.zip","sha256":"%s"},
-{"os":"darwin","arch":"amd64","kind":"zip","url":"%s/scratchpad/releases/download/v%s/scratchpad-mcp-v%s-darwin-amd64.zip","sha256":"%s"},
-{"os":"linux","arch":"arm64","kind":"tar.gz","url":"%s/scratchpad/releases/download/v%s/scratchpad-mcp-v%s-linux-arm64.tar.gz","sha256":"%s"},
-{"os":"linux","arch":"amd64","kind":"tar.gz","url":"%s/scratchpad/releases/download/v%s/scratchpad-mcp-v%s-linux-amd64.tar.gz","sha256":"%s"}]}' \
-    "$v" "$v" "$U" "$v" "$v" "${2:-$H1}" "$U" "$v" "$v" "$H2" "$U" "$v" "$v" "$H3" "$U" "$v" "$v" "$H4"
+scratch_json() { # version [sha]
+  printf '{"schema":"release-tools/tap-update/v1","app":"scratchpad","kind":"cask","package":"scratchpad","version":"%s","tag":"v%s","repo":"example-org/scratchpad","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/scratchpad/releases/download/v%s/scratchpad-%s-darwin-arm64.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$1" "${2:-$H1}"
 }
 
 # 1. correct update (cask)
@@ -86,13 +80,15 @@ run_case "2026.9.17.5 < 2026.10.1 numerically" 3 "$(cask_json 2026.9.17.5 $H1)"
 run_case "same version, different sha exits 4" 4 "$(cask_json 2026.10.1 $H5)"
 check "mismatch leaves file identical" cmp "$work/before" "$tap/Casks/usb-boop.rb"
 
-# 5. semver history sorts below CalVer; multi-platform formula
+# 5. semver history sorts below CalVer; scratchpad app cask
 fresh
-run_case "formula 0.3.0 -> 2026.10.1 applies" 0 "$(scratch_json 2026.10.1)"
-check "formula version updated" grep -q 'version "2026.10.1"' "$tap/Formula/scratchpad-mcp.rb"
-check "formula all four shas set" sh -c "[ \$(grep -c -e '$H1' -e '$H2' -e '$H3' -e '$H4' '$tap/Formula/scratchpad-mcp.rb') -eq 4 ]"
-check "formula parses" ruby -c "$tap/Formula/scratchpad-mcp.rb"
-run_case "formula lower than 2026.10.1 exits 3" 3 "$(scratch_json 1.12.3)"
+run_case "scratchpad cask 1.0.2 -> 2026.10.2 applies" 0 "$(scratch_json 2026.10.2)"
+check "scratchpad cask version updated" grep -q 'version "2026.10.2"' "$tap/Casks/scratchpad.rb"
+check "scratchpad cask url updated" grep -q "$U/scratchpad/releases/download/v2026.10.2/scratchpad-2026.10.2-darwin-arm64.zip" "$tap/Casks/scratchpad.rb"
+check "scratchpad cask caveats untouched" grep -q 'Stop service' "$tap/Casks/scratchpad.rb"
+check "scratchpad cask parses" ruby -c "$tap/Casks/scratchpad.rb"
+run_case "scratchpad cask lower than 2026.10.2 exits 3" 3 "$(scratch_json 1.0.1)"
+run_case "retired scratchpad-mcp formula is not owned" 2 "$(scratch_json 2026.10.3 | sed 's#"kind":"cask","package":"scratchpad"#"kind":"formula","package":"scratchpad-mcp"#')"
 fresh
 run_case "1.12.x < 2026.9.17.5 (paw-proxy history)" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"formula","package":"paw-proxy","version":"2026.9.17.5","tag":"v2026.9.17.5","repo":"example-org/paw-proxy","assets":[
 {"os":"darwin","arch":"arm64","kind":"binary","url":"%s/paw-proxy/releases/download/v2026.9.17.5/paw-proxy-darwin-arm64","sha256":"%s"},
@@ -119,7 +115,7 @@ run_case "wrong tag in url exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#downlo
 run_case "unknown package exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#"package":"usb-boop"#"package":"nope"#')"
 run_case "package owned by another app exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#"app":"usb-boop"#"app":"paw-proxy"#')"
 run_case "not json exits 2" 2 'not json'
-run_case "incomplete scratchpad assets exits 2" 2 "$(scratch_json 2026.10.1 | sed '/darwin","arch":"arm64"/d')"
+run_case "scratchpad linux asset exits 2" 2 "$(scratch_json 2026.10.2 | sed 's#"os":"darwin"#"os":"linux"#')"
 fresh
 run_case "unused extra asset is ignored" 0 "$(cask_json 2026.10.1 $H1 | sed 's#}\]}#},{"os":"darwin","arch":"amd64","kind":"zip","url":"https://github.com/example-org/usb-boop/releases/download/v2026.10.1/extra.zip","sha256":"'$H2'"}]}#')"
 check "extra asset reported" grep -q "^ignored asset: extra.zip$" "$tap/err"

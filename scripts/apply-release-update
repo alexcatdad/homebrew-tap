@@ -26,7 +26,7 @@ ARCHES = %w[arm64 amd64 universal].freeze
 ASSET_KINDS = %w[binary tar.gz zip dmg pkg rpm].freeze
 # Packages each application owns. Anything else is rejected as unknown.
 OWNERS = {
-  "scratchpad" => [%w[formula scratchpad-mcp]],
+  "scratchpad" => [%w[cask scratchpad]],
   "usb-boop" => [%w[cask usb-boop]],
   "pr-nanny" => [%w[formula pr-nanny], %w[cask pr-nanny]],
   "paw-proxy" => [%w[formula paw-proxy]],

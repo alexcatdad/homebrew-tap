@@ -3,6 +3,8 @@ class ScratchpadMcp < Formula
   homepage "https://github.com/alexcatdad/scratchpad"
   version "2026.10.1"
 
+  deprecate! date: "2026-10-30", because: "is replaced by the Scratchpad app", replacement_cask: "scratchpad"
+
   depends_on "git"
   depends_on "openssh"
 
