@@ -21,6 +21,10 @@ class Fail < StandardError
 end
 
 SCHEMA = "release-tools/tap-update/v1"
+# Release hosts whose download URLs are accepted. A document without "host"
+# means GitHub. Any other value is rejected.
+DEFAULT_HOST = "https://github.com"
+ALLOWED_HOSTS = [DEFAULT_HOST, "https://forgejo.triceratops-dory.ts.net"].freeze
 OSES = %w[darwin linux].freeze
 ARCHES = %w[arm64 amd64 universal].freeze
 ASSET_KINDS = %w[binary tar.gz zip dmg pkg rpm].freeze
@@ -64,7 +68,9 @@ def validate(doc)
   end
   assets = doc["assets"]
   invalid("assets must be a non-empty array") unless assets.is_a?(Array) && !assets.empty?
-  prefix = "https://github.com/#{doc['repo']}/releases/download/#{doc['tag']}/"
+  host = doc.key?("host") ? doc["host"] : DEFAULT_HOST
+  invalid("unsupported host #{host.inspect}") unless ALLOWED_HOSTS.include?(host)
+  prefix = "#{host}/#{doc['repo']}/releases/download/#{doc['tag']}/"
   seen = {}
   assets.each do |a|
     invalid("asset is not an object") unless a.is_a?(Hash)

@@ -69,3 +69,7 @@ pr-nanny is macOS-only, so `Formula/pr-nanny.rb` (Linux x64, stuck at 0.1.0-rc.5
 ## 2026-11-05: Paw Proxy app cask placeholder
 
 The updater maps `paw-proxy` to both `Formula/paw-proxy.rb` and `Casks/paw-proxy.rb`. The cask lands as a `0.0.0` placeholder (zero checksum, `Paw-Proxy.app.zip` URL) that the first app release rewrites, following the Scratchpad precedent; the updater keeps its edit-only design and its regression guard. The cask depends on arm64 and macOS 13, has no quarantine removal, and zaps `~/Library/Application Support/paw-proxy`, which the app and CLI use for the CA and socket. The placeholder is not installable until that release. The legacy `scripts/update-pr-nanny.sh` is removed.
+
+## 2026-11-05: Scratchpad releases move to Forgejo
+
+Scratchpad releases are published only on the owner's Forgejo (`forgejo.triceratops-dory.ts.net`, release-tools#11). `scripts/apply-release-update` accepts an optional `host` field restricted to exactly `https://github.com` (default) and `https://forgejo.triceratops-dory.ts.net`; asset URLs must start with `<host>/<repo>/releases/download/<tag>/`. The owner accepts that, from the first Forgejo release, the `scratchpad` cask installs only on the owner's tailnet.

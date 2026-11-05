@@ -1,4 +1,7 @@
 cask "scratchpad" do
+  # From 2026-11-05 Scratchpad releases are published only on the owner's
+  # Forgejo (forgejo.triceratops-dory.ts.net), so after the first Forgejo
+  # release this cask installs only on the owner's tailnet.
   version "2026.10.3"
   sha256 "ee3e412e32e000c955d031e5a03fa1613e11089088a9742f0a5cafd6a2fb6047"
 

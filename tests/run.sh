@@ -99,6 +99,26 @@ run_case "1.12.x < 2026.9.17.5 (paw-proxy history)" 0 "$(printf '{"schema":"rele
 check "paw-proxy resources updated" grep -q "releases/download/v2026.9.17.5/man-pages.tar.gz" "$tap/Formula/paw-proxy.rb"
 check "paw-proxy parses" ruby -c "$tap/Formula/paw-proxy.rb"
 
+# 5b. release host allowlist: GitHub (default) and the owner's Forgejo only
+F=https://forgejo.triceratops-dory.ts.net
+forgejo_json() { # host url-host
+  printf '{"schema":"release-tools/tap-update/v1","host":"%s","app":"scratchpad","kind":"cask","package":"scratchpad","version":"2026.11.1","tag":"v2026.11.1","repo":"example-org/scratchpad","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/example-org/scratchpad/releases/download/v2026.11.1/scratchpad-2026.11.1-darwin-arm64.zip","sha256":"%s"}]}' "$1" "$2" "$H3"
+}
+fresh
+cp "$tap/Casks/scratchpad.rb" "$work/scratch-before"
+run_case "unknown host exits 2" 2 "$(forgejo_json https://forgejo.example.net https://forgejo.example.net)"
+run_case "host with trailing slash exits 2" 2 "$(forgejo_json "$F/" "$F")"
+run_case "non-string host exits 2" 2 "$(forgejo_json "$F" "$F" | sed "s#\"host\":\"$F\"#\"host\":[\"$F\"]#")"
+run_case "Forgejo URL without host field exits 2" 2 "$(forgejo_json "$F" "$F" | sed "s#\"host\":\"$F\",##")"
+run_case "GitHub URL under Forgejo host exits 2" 2 "$(forgejo_json "$F" https://github.com)"
+check "rejected hosts leave cask identical" cmp "$work/scratch-before" "$tap/Casks/scratchpad.rb"
+run_case "Forgejo host and URL accepted" 0 "$(forgejo_json "$F" "$F")"
+check "scratchpad cask has Forgejo url" grep -q "url \"$F/example-org/scratchpad/releases/download/v2026.11.1/scratchpad-2026.11.1-darwin-arm64.zip\"" "$tap/Casks/scratchpad.rb"
+check "scratchpad cask has Forgejo sha" grep -q "sha256 \"$H3\"" "$tap/Casks/scratchpad.rb"
+check "scratchpad cask parses after Forgejo update" ruby -c "$tap/Casks/scratchpad.rb"
+run_case "explicit GitHub host accepted" 0 "$(scratch_json 2026.11.2 | sed 's#"schema":"release-tools/tap-update/v1",#&"host":"https://github.com",#')"
+check "Forgejo cask moves back to GitHub url" grep -q "url \"$U/scratchpad/releases/download/v2026.11.2/" "$tap/Casks/scratchpad.rb"
+
 # 6. pr-nanny: cask only; the retired Linux formula is not owned; prerelease suffix ignored for ordering
 fresh
 run_case "retired pr-nanny formula is not owned" 2 "$(printf '{"schema":"release-tools/tap-update/v1","app":"pr-nanny","kind":"formula","package":"pr-nanny","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/pr-nanny","assets":[{"os":"linux","arch":"amd64","kind":"tar.gz","url":"%s/pr-nanny/releases/download/v2026.10.1/pr-nanny-2026.10.1-linux-x64.tar.gz","sha256":"%s"}]}' "$U" $H1)"
