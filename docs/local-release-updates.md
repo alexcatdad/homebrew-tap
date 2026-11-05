@@ -41,7 +41,9 @@ re-running the same document without rebuilding or re-releasing anything.
 - `kind`: `formula` or `cask`. `os`: `darwin` or `linux`. `arch`: `arm64`,
   `amd64` or `universal`. Asset `kind`: `binary`, `tar.gz`, `zip`, `dmg`, `pkg`, `rpm`.
 - `version` is dotted numeric; `tag` is the version, optionally prefixed with `v`.
-- Every URL is `https://github.com/<repo>/releases/download/<tag>/<file>`.
+- Every URL is `<host>/<repo>/releases/download/<tag>/<file>`. The optional `host`
+  field must be exactly `https://github.com` (the default when absent) or
+  `https://forgejo.triceratops-dory.ts.net`; any other value exits 2.
 - A cask carries only `darwin` assets.
 
 ## Matching assets to the package file
@@ -66,7 +68,7 @@ Slots with interpolated URLs (`#{version}`) are unsupported.
 | Code | Meaning |
 |------|---------|
 | 0 | Applied, or already identical (tree unchanged) |
-| 2 | Invalid input: schema, URL prefix, hashes, cask with non-darwin assets, unknown package or package not owned by `app`, a package slot with no matching asset |
+| 2 | Invalid input: schema, unsupported host, URL prefix, hashes, cask with non-darwin assets, unknown package or package not owned by `app`, a package slot with no matching asset |
 | 3 | Regression: the package already has a newer version |
 | 4 | Same version already present with different URLs or hashes |
 | other | Failure (unreadable file, unsupported layout, syntax check failed) |
