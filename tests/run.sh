@@ -99,10 +99,11 @@ run_case "1.12.x < 2026.9.17.5 (paw-proxy history)" 0 "$(printf '{"schema":"rele
 check "paw-proxy resources updated" grep -q "releases/download/v2026.9.17.5/man-pages.tar.gz" "$tap/Formula/paw-proxy.rb"
 check "paw-proxy parses" ruby -c "$tap/Formula/paw-proxy.rb"
 
-# 6. pr-nanny: formula and cask are separate packages; prerelease suffix ignored for ordering
+# 6. pr-nanny: cask only; the retired Linux formula is not owned; prerelease suffix ignored for ordering
 fresh
-run_case "pr-nanny formula rc.5 -> CalVer" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"pr-nanny","kind":"formula","package":"pr-nanny","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/pr-nanny","assets":[{"os":"linux","arch":"amd64","kind":"tar.gz","url":"%s/pr-nanny/releases/download/v2026.10.1/pr-nanny-2026.10.1-linux-x64.tar.gz","sha256":"%s"}]}' "$U" $H1)"
-check "pr-nanny cask untouched by formula update" cmp "$root/tests/fixtures/Casks/pr-nanny.rb" "$tap/Casks/pr-nanny.rb"
+run_case "retired pr-nanny formula is not owned" 2 "$(printf '{"schema":"release-tools/tap-update/v1","app":"pr-nanny","kind":"formula","package":"pr-nanny","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/pr-nanny","assets":[{"os":"linux","arch":"amd64","kind":"tar.gz","url":"%s/pr-nanny/releases/download/v2026.10.1/pr-nanny-2026.10.1-linux-x64.tar.gz","sha256":"%s"}]}' "$U" $H1)"
+run_case "pr-nanny cask rc.6 -> CalVer" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"pr-nanny","kind":"cask","package":"pr-nanny","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/pr-nanny","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/pr-nanny/releases/download/v2026.10.1/pr-nanny-2026.10.1-darwin-arm64.zip","sha256":"%s"}]}' "$U" $H1)"
+check "pr-nanny cask updated" grep -q "v2026.10.1/pr-nanny-2026.10.1-darwin-arm64.zip" "$tap/Casks/pr-nanny.rb"
 
 # 7. invalid input
 fresh

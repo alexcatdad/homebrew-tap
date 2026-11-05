@@ -1,8 +1,10 @@
 class PawProxy < Formula
   desc "Zero-config HTTPS proxy for local macOS development"
   homepage "https://github.com/alexcatdad/paw-proxy"
-  license "MIT"
   version "1.12.3"
+  license "MIT"
+
+  deprecate! date: "2026-11-05", because: "is replaced by the Paw Proxy app cask", replacement_cask: "paw-proxy"
 
   on_macos do
     on_arm do

@@ -46,6 +46,6 @@ The existing local Developer ID identity and notarisation profile were verified 
 
 ## Local release updater decisions
 
-- [ ] Decide the open package-mapping questions in [local release updates](../docs/local-release-updates.md#decisions-needed) (`paw`, pr-nanny formula plus cask, scratchpad cask, README table, legacy script).
+- [ ] Decide the open package-mapping questions in [local release updates](../docs/local-release-updates.md#decisions-needed) (`paw`, README table, legacy script).
 - [ ] Retire the tap GitHub App installation and its secrets (manual owner step).
 - [ ] Accept the updater with a real release; only synthetic fixtures are tested so far.
