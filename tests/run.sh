@@ -105,6 +105,20 @@ run_case "retired pr-nanny formula is not owned" 2 "$(printf '{"schema":"release
 run_case "pr-nanny cask rc.6 -> CalVer" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"pr-nanny","kind":"cask","package":"pr-nanny","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/pr-nanny","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/pr-nanny/releases/download/v2026.10.1/pr-nanny-2026.10.1-darwin-arm64.zip","sha256":"%s"}]}' "$U" $H1)"
 check "pr-nanny cask updated" grep -q "v2026.10.1/pr-nanny-2026.10.1-darwin-arm64.zip" "$tap/Casks/pr-nanny.rb"
 
+# 6b. paw-proxy app cask: first release rewrites the 0.0.0 placeholder; formula left alone
+fresh
+pp_cask_json() { # version
+  printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"cask","package":"paw-proxy","version":"%s","tag":"v%s","repo":"example-org/paw-proxy","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/paw-proxy/releases/download/v%s/Paw-Proxy.app.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$H2"
+}
+run_case "paw-proxy cask placeholder -> first release" 0 "$(pp_cask_json 1.13.0)"
+check "paw-proxy cask version set" grep -q 'version "1.13.0"' "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask url set" grep -q "$U/paw-proxy/releases/download/v1.13.0/Paw-Proxy.app.zip" "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask sha set" grep -q "sha256 \"$H2\"" "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask zap untouched" grep -q 'Application Support/paw-proxy' "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask parses" ruby -c "$tap/Casks/paw-proxy.rb"
+check "paw-proxy formula untouched by cask update" cmp "$root/tests/fixtures/Formula/paw-proxy.rb" "$tap/Formula/paw-proxy.rb"
+run_case "paw-proxy cask lower than 1.13.0 exits 3" 3 "$(pp_cask_json 1.12.3)"
+
 # 7. invalid input
 fresh
 run_case "missing assets exits 2" 2 '{"schema":"release-tools/tap-update/v1","app":"usb-boop","kind":"cask","package":"usb-boop","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/usb-boop"}'

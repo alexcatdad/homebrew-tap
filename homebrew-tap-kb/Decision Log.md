@@ -65,3 +65,7 @@ Scratchpad releases now publish one signed, notarised macOS ARM64 app archive an
 ## 2026-11-05: Retire the PR Nanny Linux formula; deprecate paw-proxy
 
 pr-nanny is macOS-only, so `Formula/pr-nanny.rb` (Linux x64, stuck at 0.1.0-rc.5) is removed, together with its Ubuntu install CI job and its updater mapping; `Casks/pr-nanny.rb` is the only package. `Formula/paw-proxy.rb` is deprecated with `replacement_cask: "paw-proxy"` and stays installable; `Casks/paw-proxy.rb` arrives with the first Paw Proxy app release. `Formula/paw.rb` is the unrelated `paw` dotfiles manager and is unchanged. `Formula/scratchpad-mcp.rb` keeps its 2026-10-30 deprecation; the Scratchpad app bundles the MCP server at `Scratchpad.app/Contents/Helpers/scratchpad-mcp`.
+
+## 2026-11-05: Paw Proxy app cask placeholder
+
+The updater maps `paw-proxy` to both `Formula/paw-proxy.rb` and `Casks/paw-proxy.rb`. The cask lands as a `0.0.0` placeholder (zero checksum, `Paw-Proxy.app.zip` URL) that the first app release rewrites, following the Scratchpad precedent; the updater keeps its edit-only design and its regression guard. The cask depends on arm64 and macOS 13, has no quarantine removal, and zaps `~/Library/Application Support/paw-proxy`, which the app and CLI use for the CA and socket. The placeholder is not installable until that release. The legacy `scripts/update-pr-nanny.sh` is removed.
