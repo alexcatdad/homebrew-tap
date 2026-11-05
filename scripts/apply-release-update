@@ -29,7 +29,7 @@ OWNERS = {
   "scratchpad" => [%w[cask scratchpad]],
   "usb-boop" => [%w[cask usb-boop]],
   "pr-nanny" => [%w[formula pr-nanny], %w[cask pr-nanny]],
-  "paw-proxy" => [%w[formula paw-proxy]],
+  "paw-proxy" => [%w[formula paw-proxy], %w[cask paw-proxy]],
 }.freeze
 
 def invalid(msg)

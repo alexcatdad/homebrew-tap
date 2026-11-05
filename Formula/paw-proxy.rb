@@ -1,27 +1,31 @@
 class PawProxy < Formula
-  desc "Zero-config HTTPS proxy for local macOS development"
+  desc "Zero-config HTTPS proxy for local development (Linux; macOS uses the cask)"
   homepage "https://github.com/alexcatdad/paw-proxy"
-  license "MIT"
   version "1.12.3"
+  license "MIT"
 
-  on_macos do
+  # macOS installs Paw Proxy.app instead:
+  #   brew uninstall paw-proxy && brew install --cask alexcatdad/tap/paw-proxy
+  depends_on :linux
+
+  on_linux do
     on_arm do
-      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.12.3/paw-proxy-darwin-arm64"
-      sha256 "7a3debc2512eed465570df44145f07098b446b727198e860e09907a1f1c427bf"
+      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.12.3/paw-proxy-linux-arm64"
+      sha256 "e41f3bfb09173b2902d49c628a5c501624aacadeb51b58322c1bf965c8250b33"
 
       resource "up" do
-        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.12.3/up-darwin-arm64"
-        sha256 "e5a0a34360438cf528417169bf5cce401bae4ee3da1034a2cbf8163ea3138c5f"
+        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.12.3/up-linux-arm64"
+        sha256 "870f38c87e2f9f54c605206dbf924964ea5f84923032e392e04ded8563e71747"
       end
     end
 
     on_intel do
-      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.12.3/paw-proxy-darwin-amd64"
-      sha256 "7c71cd2d080556bf9b2e3efffe109bed11b42ef0f325ff69f5a0f14f09e706fb"
+      url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.12.3/paw-proxy-linux-amd64"
+      sha256 "9bd1cd1b883e51967ab707d62df02807ec57edcb34f3aeb21a99cf4c6fe87158"
 
       resource "up" do
-        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.12.3/up-darwin-amd64"
-        sha256 "897a30d30aa3d7f5d08bae1c23f4ca668ef07cda1c2b8aa3fb15ca26e67b0fec"
+        url "https://github.com/alexcatdad/paw-proxy/releases/download/v1.12.3/up-linux-amd64"
+        sha256 "1c5a485efb59439121e56a38497d6cff64d8032a2a9c97186ae41149939492d7"
       end
     end
   end
@@ -42,8 +46,8 @@ class PawProxy < Formula
     end
   end
 
-  def post_install
-    ohai "Run 'sudo paw-proxy setup' to configure CA, DNS resolver, and LaunchAgent"
+  def caveats
+    "Run 'sudo paw-proxy setup' to configure the CA, DNS resolver and user service."
   end
 
   test do
