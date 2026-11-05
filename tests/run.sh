@@ -139,6 +139,15 @@ check "universal extra reported" grep -q "^ignored asset: paw-proxy-darwin-unive
 check "paw-proxy parses" ruby -c "$tap/Formula/paw-proxy.rb"
 fresh
 
+# paw-proxy cask: the unversioned app zip replaces the seed slot
+run_case "paw-proxy cask 1.12.3 seed -> 2026.11.1" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"cask","package":"paw-proxy","version":"2026.11.1","tag":"v2026.11.1","repo":"example-org/paw-proxy","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/paw-proxy/releases/download/v2026.11.1/Paw-Proxy.app.zip","sha256":"%s"}]}' "$U" $H1)"
+check "paw-proxy cask version updated" grep -q 'version "2026.11.1"' "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask url updated" grep -q "$U/paw-proxy/releases/download/v2026.11.1/Paw-Proxy.app.zip" "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask sha updated" grep -q "sha256 \"$H1\"" "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask binaries untouched" grep -q 'Contents/Helpers/paw-proxy' "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask parses" ruby -c "$tap/Casks/paw-proxy.rb"
+fresh
+
 # 8. cask with a linux asset
 run_case "cask with linux asset exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#"os":"darwin"#"os":"linux"#')"
 rm -f "$tap/update.json" "$tap/err"
