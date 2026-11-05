@@ -82,12 +82,12 @@ prefix and any pre-release suffix, so `0.3.0` < `1.12.3` < `2026.9.17.5` <
 |-----|---------------|-----------|
 | scratchpad | `Casks/scratchpad.rb` | macOS arm64 only. `Formula/scratchpad-mcp.rb` is deprecated and no longer updated. |
 | usb-boop | `Casks/usb-boop.rb` | macOS arm64 only |
-| pr-nanny | `Casks/pr-nanny.rb` (macOS arm64), `Formula/pr-nanny.rb` (Linux x64) | separate documents per kind |
-| paw-proxy | `Formula/paw-proxy.rb` | macOS arm64/amd64 |
+| pr-nanny | `Casks/pr-nanny.rb` | macOS arm64 only. The Linux `Formula/pr-nanny.rb` was removed on 2026-11-05. |
+| paw-proxy | `Formula/paw-proxy.rb` | macOS arm64/amd64. Deprecated 2026-11-05 with `replacement_cask: "paw-proxy"`; `Casks/paw-proxy.rb` does not exist yet and arrives with the first app release. |
 
-Casks are macOS-only; Linux uses a formula. The updater rejects any package not
+Casks are macOS-only. The updater rejects any package not
 listed above, including `Formula/paw.rb`, which no application owns here.
-No package is renamed or removed by this change.
+`Formula/pr-nanny.rb` was removed on 2026-11-05; no other package has been renamed or removed.
 
 ### Decisions needed
 
@@ -97,10 +97,8 @@ No package is renamed or removed by this change.
    fourth application and leaves `paw` unmanaged by this updater. Choose: keep
    `paw` as a manually maintained formula, add it as a fifth application, or
    remove it.
-2. pr-nanny formula and cask. They cover different platforms (Linux x64 formula,
-   macOS arm64 cask) and are updated by separate documents. Choose: keep both
-   (current behaviour) or retire the formula. If the Linux package is kept, its
-   releases must keep publishing a `linux-x64.tar.gz` asset.
+2. Decided 2026-11-05: pr-nanny is macOS-only and ships as the cask; the Linux
+   formula is removed and the updater no longer accepts it.
 3. Decided 2026-10-30: scratchpad ships the app cask; the MCP formula is deprecated.
 4. `scripts/update-pr-nanny.sh` was the helper for the deleted workflow. It is
    kept and unreferenced; remove it once the local task is accepted.

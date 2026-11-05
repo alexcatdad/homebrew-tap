@@ -61,3 +61,7 @@ Tap package updates are applied by `scripts/apply-release-update` from a `releas
 ## 2026-10-30: Scratchpad app cask replaces the MCP formula
 
 Scratchpad releases now publish one signed, notarised macOS ARM64 app archive and update `Casks/scratchpad.rb`; the updater maps the `scratchpad` application to that cask only. `Formula/scratchpad-mcp.rb` stays at its last version, deprecated with `replacement_cask: "scratchpad"`, and receives no further releases. The cask uses no Ruby hooks, which Homebrew 7 rejects; after an upgrade the running capture service switches to the new version on Stop/Start or the next login, as stated in its caveats. The cask lands at a placeholder version and must be merged immediately before the first Scratchpad app release, which rewrites it.
+
+## 2026-11-05: Retire the PR Nanny Linux formula; deprecate paw-proxy
+
+pr-nanny is macOS-only, so `Formula/pr-nanny.rb` (Linux x64, stuck at 0.1.0-rc.5) is removed, together with its Ubuntu install CI job and its updater mapping; `Casks/pr-nanny.rb` is the only package. `Formula/paw-proxy.rb` is deprecated with `replacement_cask: "paw-proxy"` and stays installable; `Casks/paw-proxy.rb` arrives with the first Paw Proxy app release. `Formula/paw.rb` is the unrelated `paw` dotfiles manager and is unchanged. `Formula/scratchpad-mcp.rb` keeps its 2026-10-30 deprecation; the Scratchpad app bundles the MCP server at `Scratchpad.app/Contents/Helpers/scratchpad-mcp`.

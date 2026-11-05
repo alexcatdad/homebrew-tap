@@ -70,4 +70,4 @@ verification workflow and delivered cask commit.
 
 ## PR Nanny signed macOS beta
 
-RC6 cask delivery requires the published signed archive and matching checksum, Apple signature/ticket verification, and the exact-head tap checks. Installed-app launch and retained PAT authentication remain separate acceptance checks. The Linux formula stays on its existing qualified release.
+RC6 cask delivery requires the published signed archive and matching checksum, Apple signature/ticket verification, and the exact-head tap checks. Installed-app launch and retained PAT authentication remain separate acceptance checks. The Linux formula and its Ubuntu install job were retired on 2026-11-05; pr-nanny is macOS-only.
