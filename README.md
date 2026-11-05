@@ -16,7 +16,7 @@ brew tap alexcatdad/tap
 | [paw-proxy](https://github.com/alexcatdad/paw-proxy) | 1.12.3 (deprecated) | Zero-config HTTPS proxy for local macOS development; to be replaced by the Paw Proxy app cask |
 | [paw](https://github.com/alexcatdad/paw) | 0.5.0 | Personal dotfiles manager CLI |
 | [pr-nanny](https://github.com/alexcatdad/pr-nanny) | 0.1.0-rc.6 | Passive GitHub pull-request monitor (signed macOS ARM64 cask) |
-| [scratchpad](https://github.com/alexcatdad/scratchpad) | pending first app release | Menu bar app for private developer memory (signed macOS ARM64 cask) |
+| [scratchpad](https://github.com/alexcatdad/scratchpad) | 2026.10.3 | Menu bar app for private developer memory (signed macOS ARM64 cask) |
 | [scratchpad-mcp](https://github.com/alexcatdad/scratchpad) | 2026.10.1 (deprecated) | Replaced by the Scratchpad app cask, which bundles the MCP server |
 | [usb-boop](https://github.com/alexcatdad/usb-boop) | 2026.09.17.5 | Menu bar app that reports negotiated USB link speed (cask) |
 <!-- END FORMULAE -->

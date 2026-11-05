@@ -83,11 +83,14 @@ prefix and any pre-release suffix, so `0.3.0` < `1.12.3` < `2026.9.17.5` <
 | scratchpad | `Casks/scratchpad.rb` | macOS arm64 only. `Formula/scratchpad-mcp.rb` is deprecated and no longer updated. |
 | usb-boop | `Casks/usb-boop.rb` | macOS arm64 only |
 | pr-nanny | `Casks/pr-nanny.rb` | macOS arm64 only. The Linux `Formula/pr-nanny.rb` was removed on 2026-11-05. |
-| paw-proxy | `Formula/paw-proxy.rb` | macOS arm64/amd64. Deprecated 2026-11-05 with `replacement_cask: "paw-proxy"`; `Casks/paw-proxy.rb` does not exist yet and arrives with the first app release. |
+| paw-proxy | `Casks/paw-proxy.rb` (macOS arm64 app), `Formula/paw-proxy.rb` | The cask is a `0.0.0` placeholder that the first app release rewrites. The formula is macOS arm64/amd64 only and deprecated 2026-11-05 with `replacement_cask: "paw-proxy"`. |
 
 Casks are macOS-only. The updater rejects any package not
 listed above, including `Formula/paw.rb`, which no application owns here.
 `Formula/pr-nanny.rb` was removed on 2026-11-05; no other package has been renamed or removed.
+New app casks land as a placeholder at version `0.0.0` with a zero checksum and a
+release-asset URL whose file name matches the release, so the first release is
+an ordinary update through the regression guard; the updater never creates files.
 
 ### Decisions needed
 
@@ -100,8 +103,8 @@ listed above, including `Formula/paw.rb`, which no application owns here.
 2. Decided 2026-11-05: pr-nanny is macOS-only and ships as the cask; the Linux
    formula is removed and the updater no longer accepts it.
 3. Decided 2026-10-30: scratchpad ships the app cask; the MCP formula is deprecated.
-4. `scripts/update-pr-nanny.sh` was the helper for the deleted workflow. It is
-   kept and unreferenced; remove it once the local task is accepted.
+4. Done 2026-11-05: `scripts/update-pr-nanny.sh`, the helper for the deleted
+   workflow, is removed.
 5. The README package table is not touched by the updater (only the named
    package file changes). Decide whether the local task should also refresh it.
 6. Retiring the tap GitHub App installation and its secrets is a manual owner

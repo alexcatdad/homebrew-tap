@@ -46,6 +46,7 @@ The existing local Developer ID identity and notarisation profile were verified 
 
 ## Local release updater decisions
 
-- [ ] Decide the open package-mapping questions in [local release updates](../docs/local-release-updates.md#decisions-needed) (`paw`, README table, legacy script).
+- [ ] Decide the open package-mapping questions in [local release updates](../docs/local-release-updates.md#decisions-needed) (`paw`, README table).
 - [ ] Retire the tap GitHub App installation and its secrets (manual owner step).
 - [ ] Accept the updater with a real release; only synthetic fixtures are tested so far.
+- [ ] paw-proxy `release.json` sends Linux-only assets (`targets: linux-amd64, linux-arm64`) to `Formula/paw-proxy.rb`, but that formula has only macOS slots, so the updater will reject the formula document (exit 2, no asset for `paw-proxy-darwin-arm64`). Decide: drop the formula tap entry from `release.json`, or convert the formula to Linux.
