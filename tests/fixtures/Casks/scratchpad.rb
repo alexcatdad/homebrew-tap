@@ -2,7 +2,7 @@ cask "scratchpad" do
   version "1.0.2"
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
-  url "https://github.com/example-org/scratchpad/releases/download/v1.0.2/scratchpad-1.0.2-darwin-arm64.zip"
+  url "https://github.com/alexcatdad/scratchpad/releases/download/v1.0.2/scratchpad-1.0.2-darwin-arm64.zip"
   name "Scratchpad"
   desc "Menu bar app for private developer memory"
   homepage "https://github.com/alexcatdad/scratchpad"

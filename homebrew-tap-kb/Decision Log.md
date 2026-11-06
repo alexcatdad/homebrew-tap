@@ -73,3 +73,7 @@ The updater maps `paw-proxy` to both `Formula/paw-proxy.rb` and `Casks/paw-proxy
 ## 2026-11-05: Scratchpad releases move to Forgejo
 
 Scratchpad releases are published only on the owner's Forgejo (`forgejo.triceratops-dory.ts.net`, release-tools#11). `scripts/apply-release-update` accepts an optional `host` field restricted to exactly `https://github.com` (default) and `https://forgejo.triceratops-dory.ts.net`; asset URLs must start with `<host>/<repo>/releases/download/<tag>/`. The owner accepts that, from the first Forgejo release, the `scratchpad` cask installs only on the owner's tailnet.
+
+## 2026-11-06: paw-proxy is cask-only; apps bound to their repositories
+
+`Casks/paw-proxy.rb` links the app's bundled helpers (`Paw Proxy.app/Contents/Helpers/paw-proxy` and `up`, per paw-proxy's `macos/Scripts/package-app.sh`) onto PATH with `binary` stanzas and gains a `livecheck` block like usb-boop's. `Formula/paw-proxy.rb` is removed: it shared the `paw-proxy` token with the cask, so `brew install alexcatdad/tap/paw-proxy` resolved to the old formula. The updater no longer maps it. Each app in the updater's `OWNERS` is bound to its source repository (`alexcatdad/<app>`); a document naming any other repository exits 2. The updater rewrites only `version`, `url` and `sha256` lines, and a test checks that the cask's `binary` and `livecheck` stanzas survive an update.

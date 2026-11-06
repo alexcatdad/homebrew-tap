@@ -7,10 +7,17 @@ cask "paw-proxy" do
   desc "Zero-config HTTPS proxy for local development"
   homepage "https://github.com/alexcatdad/paw-proxy"
 
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   depends_on arch: :arm64
   depends_on macos: :ventura
 
   app "Paw Proxy.app"
+  binary "#{appdir}/Paw Proxy.app/Contents/Helpers/paw-proxy"
+  binary "#{appdir}/Paw Proxy.app/Contents/Helpers/up"
 
   zap trash: "~/Library/Application Support/paw-proxy"
 end

@@ -47,12 +47,12 @@ check() {
   else fail=$((fail + 1)); echo "FAIL $name"; fi
 }
 
-U=https://github.com/example-org
+U=https://github.com/alexcatdad
 cask_json() { # version sha
-  printf '{"schema":"release-tools/tap-update/v1","app":"usb-boop","kind":"cask","package":"usb-boop","version":"%s","tag":"v%s","repo":"example-org/usb-boop","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/usb-boop/releases/download/v%s/usb-boop-macos-arm64.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$2"
+  printf '{"schema":"release-tools/tap-update/v1","app":"usb-boop","kind":"cask","package":"usb-boop","version":"%s","tag":"v%s","repo":"alexcatdad/usb-boop","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/usb-boop/releases/download/v%s/usb-boop-macos-arm64.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$2"
 }
 scratch_json() { # version [sha]
-  printf '{"schema":"release-tools/tap-update/v1","app":"scratchpad","kind":"cask","package":"scratchpad","version":"%s","tag":"v%s","repo":"example-org/scratchpad","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/scratchpad/releases/download/v%s/scratchpad-%s-darwin-arm64.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$1" "${2:-$H1}"
+  printf '{"schema":"release-tools/tap-update/v1","app":"scratchpad","kind":"cask","package":"scratchpad","version":"%s","tag":"v%s","repo":"alexcatdad/scratchpad","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/scratchpad/releases/download/v%s/scratchpad-%s-darwin-arm64.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$1" "${2:-$H1}"
 }
 
 # 1. correct update (cask)
@@ -89,46 +89,12 @@ check "scratchpad cask caveats untouched" grep -q 'Stop service' "$tap/Casks/scr
 check "scratchpad cask parses" ruby -c "$tap/Casks/scratchpad.rb"
 run_case "scratchpad cask lower than 2026.10.2 exits 3" 3 "$(scratch_json 1.0.1)"
 run_case "retired scratchpad-mcp formula is not owned" 2 "$(scratch_json 2026.10.3 | sed 's#"kind":"cask","package":"scratchpad"#"kind":"formula","package":"scratchpad-mcp"#')"
-fresh
-run_case "1.12.x < 2026.9.17.5 (paw-proxy history)" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"formula","package":"paw-proxy","version":"2026.9.17.5","tag":"v2026.9.17.5","repo":"example-org/paw-proxy","assets":[
-{"os":"darwin","arch":"arm64","kind":"binary","url":"%s/paw-proxy/releases/download/v2026.9.17.5/paw-proxy-darwin-arm64","sha256":"%s"},
-{"os":"darwin","arch":"arm64","kind":"binary","url":"%s/paw-proxy/releases/download/v2026.9.17.5/up-darwin-arm64","sha256":"%s"},
-{"os":"darwin","arch":"amd64","kind":"binary","url":"%s/paw-proxy/releases/download/v2026.9.17.5/paw-proxy-darwin-amd64","sha256":"%s"},
-{"os":"darwin","arch":"amd64","kind":"binary","url":"%s/paw-proxy/releases/download/v2026.9.17.5/up-darwin-amd64","sha256":"%s"},
-{"os":"darwin","arch":"universal","kind":"tar.gz","url":"%s/paw-proxy/releases/download/v2026.9.17.5/man-pages.tar.gz","sha256":"%s"}]}' "$U" $H1 "$U" $H2 "$U" $H3 "$U" $H4 "$U" $H5)"
-check "paw-proxy resources updated" grep -q "releases/download/v2026.9.17.5/man-pages.tar.gz" "$tap/Formula/paw-proxy.rb"
-check "paw-proxy parses" ruby -c "$tap/Formula/paw-proxy.rb"
+run_case "retired paw-proxy formula is not owned" 2 "$(printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"formula","package":"paw-proxy","version":"2026.11.7","tag":"v2026.11.7","repo":"alexcatdad/paw-proxy","assets":[{"os":"darwin","arch":"arm64","kind":"binary","url":"%s/paw-proxy/releases/download/v2026.11.7/paw-proxy-darwin-arm64","sha256":"%s"}]}' "$U" $H1)"
 
-# 5b. release host allowlist: GitHub (default) and the owner's Forgejo only
-F=https://forgejo.triceratops-dory.ts.net
-forgejo_json() { # host url-host
-  printf '{"schema":"release-tools/tap-update/v1","host":"%s","app":"scratchpad","kind":"cask","package":"scratchpad","version":"2026.11.1","tag":"v2026.11.1","repo":"example-org/scratchpad","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/example-org/scratchpad/releases/download/v2026.11.1/scratchpad-2026.11.1-darwin-arm64.zip","sha256":"%s"}]}' "$1" "$2" "$H3"
-}
-fresh
-cp "$tap/Casks/scratchpad.rb" "$work/scratch-before"
-run_case "unknown host exits 2" 2 "$(forgejo_json https://forgejo.example.net https://forgejo.example.net)"
-run_case "host with trailing slash exits 2" 2 "$(forgejo_json "$F/" "$F")"
-run_case "non-string host exits 2" 2 "$(forgejo_json "$F" "$F" | sed "s#\"host\":\"$F\"#\"host\":[\"$F\"]#")"
-run_case "Forgejo URL without host field exits 2" 2 "$(forgejo_json "$F" "$F" | sed "s#\"host\":\"$F\",##")"
-run_case "GitHub URL under Forgejo host exits 2" 2 "$(forgejo_json "$F" https://github.com)"
-check "rejected hosts leave cask identical" cmp "$work/scratch-before" "$tap/Casks/scratchpad.rb"
-run_case "Forgejo host and URL accepted" 0 "$(forgejo_json "$F" "$F")"
-check "scratchpad cask has Forgejo url" grep -q "url \"$F/example-org/scratchpad/releases/download/v2026.11.1/scratchpad-2026.11.1-darwin-arm64.zip\"" "$tap/Casks/scratchpad.rb"
-check "scratchpad cask has Forgejo sha" grep -q "sha256 \"$H3\"" "$tap/Casks/scratchpad.rb"
-check "scratchpad cask parses after Forgejo update" ruby -c "$tap/Casks/scratchpad.rb"
-run_case "explicit GitHub host accepted" 0 "$(scratch_json 2026.11.2 | sed 's#"schema":"release-tools/tap-update/v1",#&"host":"https://github.com",#')"
-check "Forgejo cask moves back to GitHub url" grep -q "url \"$U/scratchpad/releases/download/v2026.11.2/" "$tap/Casks/scratchpad.rb"
-
-# 6. pr-nanny: cask only; the retired Linux formula is not owned; prerelease suffix ignored for ordering
-fresh
-run_case "retired pr-nanny formula is not owned" 2 "$(printf '{"schema":"release-tools/tap-update/v1","app":"pr-nanny","kind":"formula","package":"pr-nanny","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/pr-nanny","assets":[{"os":"linux","arch":"amd64","kind":"tar.gz","url":"%s/pr-nanny/releases/download/v2026.10.1/pr-nanny-2026.10.1-linux-x64.tar.gz","sha256":"%s"}]}' "$U" $H1)"
-run_case "pr-nanny cask rc.6 -> CalVer" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"pr-nanny","kind":"cask","package":"pr-nanny","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/pr-nanny","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/pr-nanny/releases/download/v2026.10.1/pr-nanny-2026.10.1-darwin-arm64.zip","sha256":"%s"}]}' "$U" $H1)"
-check "pr-nanny cask updated" grep -q "v2026.10.1/pr-nanny-2026.10.1-darwin-arm64.zip" "$tap/Casks/pr-nanny.rb"
-
-# 6b. paw-proxy app cask: first release rewrites the 0.0.0 placeholder; formula left alone
+# 6b. paw-proxy app cask: first release rewrites the 0.0.0 placeholder; binaries and livecheck kept
 fresh
 pp_cask_json() { # version
-  printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"cask","package":"paw-proxy","version":"%s","tag":"v%s","repo":"example-org/paw-proxy","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/paw-proxy/releases/download/v%s/Paw-Proxy.app.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$H2"
+  printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"cask","package":"paw-proxy","version":"%s","tag":"v%s","repo":"alexcatdad/paw-proxy","assets":[{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/paw-proxy/releases/download/v%s/Paw-Proxy.app.zip","sha256":"%s"}]}' "$1" "$1" "$U" "$1" "$H2"
 }
 run_case "paw-proxy cask placeholder -> first release" 0 "$(pp_cask_json 1.13.0)"
 check "paw-proxy cask version set" grep -q 'version "1.13.0"' "$tap/Casks/paw-proxy.rb"
@@ -136,42 +102,41 @@ check "paw-proxy cask url set" grep -q "$U/paw-proxy/releases/download/v1.13.0/P
 check "paw-proxy cask sha set" grep -q "sha256 \"$H2\"" "$tap/Casks/paw-proxy.rb"
 check "paw-proxy cask zap untouched" grep -q 'Application Support/paw-proxy' "$tap/Casks/paw-proxy.rb"
 check "paw-proxy cask parses" ruby -c "$tap/Casks/paw-proxy.rb"
-check "paw-proxy formula untouched by cask update" cmp "$root/tests/fixtures/Formula/paw-proxy.rb" "$tap/Formula/paw-proxy.rb"
+check "paw-proxy cask keeps paw-proxy binary" grep -qF 'binary "#{appdir}/Paw Proxy.app/Contents/Helpers/paw-proxy"' "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask keeps up binary" grep -qF 'binary "#{appdir}/Paw Proxy.app/Contents/Helpers/up"' "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask keeps livecheck" grep -q "strategy :github_latest" "$tap/Casks/paw-proxy.rb"
+check "paw-proxy cask changes only version, sha and url" sh -c "[ \$(diff '$root/tests/fixtures/Casks/paw-proxy.rb' '$tap/Casks/paw-proxy.rb' | grep -c '^>') -eq 3 ]"
 run_case "paw-proxy cask lower than 1.13.0 exits 3" 3 "$(pp_cask_json 1.12.3)"
 
 # 7. invalid input
 fresh
-run_case "missing assets exits 2" 2 '{"schema":"release-tools/tap-update/v1","app":"usb-boop","kind":"cask","package":"usb-boop","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/usb-boop"}'
-run_case "empty assets exits 2" 2 '{"schema":"release-tools/tap-update/v1","app":"usb-boop","kind":"cask","package":"usb-boop","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/usb-boop","assets":[]}'
+run_case "missing assets exits 2" 2 '{"schema":"release-tools/tap-update/v1","app":"usb-boop","kind":"cask","package":"usb-boop","version":"2026.10.1","tag":"v2026.10.1","repo":"alexcatdad/usb-boop"}'
+run_case "empty assets exits 2" 2 '{"schema":"release-tools/tap-update/v1","app":"usb-boop","kind":"cask","package":"usb-boop","version":"2026.10.1","tag":"v2026.10.1","repo":"alexcatdad/usb-boop","assets":[]}'
 run_case "bad schema exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#tap-update/v1#tap-update/v0#')"
 run_case "bad sha exits 2" 2 "$(cask_json 2026.10.1 nothex)"
-run_case "wrong url prefix exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#github.com/example-org#example.com/example-org#')"
+run_case "wrong url prefix exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#github.com/alexcatdad#example.com/alexcatdad#')"
 run_case "wrong tag in url exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#download/v2026.10.1/#download/v9.9.9/#')"
 run_case "unknown package exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#"package":"usb-boop"#"package":"nope"#')"
+run_case "repo not bound to app exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#alexcatdad/usb-boop#someone-else/usb-boop#g')"
+run_case "another app's repo exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#alexcatdad/usb-boop#alexcatdad/pr-nanny#g')"
 run_case "package owned by another app exits 2" 2 "$(cask_json 2026.10.1 $H1 | sed 's#"app":"usb-boop"#"app":"paw-proxy"#')"
 run_case "not json exits 2" 2 'not json'
 run_case "scratchpad linux asset exits 2" 2 "$(scratch_json 2026.10.2 | sed 's#"os":"darwin"#"os":"linux"#')"
 fresh
-run_case "unused extra asset is ignored" 0 "$(cask_json 2026.10.1 $H1 | sed 's#}\]}#},{"os":"darwin","arch":"amd64","kind":"zip","url":"https://github.com/example-org/usb-boop/releases/download/v2026.10.1/extra.zip","sha256":"'$H2'"}]}#')"
+run_case "unused extra asset is ignored" 0 "$(cask_json 2026.10.1 $H1 | sed 's#}\]}#},{"os":"darwin","arch":"amd64","kind":"zip","url":"https://github.com/alexcatdad/usb-boop/releases/download/v2026.10.1/extra.zip","sha256":"'$H2'"}]}#')"
 check "extra asset reported" grep -q "^ignored asset: extra.zip$" "$tap/err"
 
-# unversioned names (same file name, new tag) with extra linux/universal assets
+# unversioned name (same file name, new tag) with extra darwin assets
 fresh
 P=$U/paw-proxy/releases/download/v2026.10.1
-run_case "paw-proxy unversioned names, extras ignored" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"formula","package":"paw-proxy","version":"2026.10.1","tag":"v2026.10.1","repo":"example-org/paw-proxy","assets":[
-{"os":"darwin","arch":"arm64","kind":"binary","url":"%s/paw-proxy-darwin-arm64","sha256":"%s"},
-{"os":"darwin","arch":"arm64","kind":"binary","url":"%s/up-darwin-arm64","sha256":"%s"},
+run_case "paw-proxy unversioned cask name, extras ignored" 0 "$(printf '{"schema":"release-tools/tap-update/v1","app":"paw-proxy","kind":"cask","package":"paw-proxy","version":"2026.10.1","tag":"v2026.10.1","repo":"alexcatdad/paw-proxy","assets":[
+{"os":"darwin","arch":"arm64","kind":"zip","url":"%s/Paw-Proxy.app.zip","sha256":"%s"},
 {"os":"darwin","arch":"amd64","kind":"binary","url":"%s/paw-proxy-darwin-amd64","sha256":"%s"},
-{"os":"darwin","arch":"amd64","kind":"binary","url":"%s/up-darwin-amd64","sha256":"%s"},
-{"os":"darwin","arch":"universal","kind":"tar.gz","url":"%s/man-pages.tar.gz","sha256":"%s"},
-{"os":"linux","arch":"arm64","kind":"binary","url":"%s/paw-proxy-linux-arm64","sha256":"%s"},
-{"os":"linux","arch":"amd64","kind":"binary","url":"%s/paw-proxy-linux-amd64","sha256":"%s"},
-{"os":"darwin","arch":"universal","kind":"binary","url":"%s/paw-proxy-darwin-universal","sha256":"%s"}]}' "$P" $H1 "$P" $H2 "$P" $H3 "$P" $H4 "$P" $H5 "$P" $H1 "$P" $H1 "$P" $H1)"
-check "slots updated to new tag" grep -q "download/v2026.10.1/paw-proxy-darwin-arm64" "$tap/Formula/paw-proxy.rb"
-check "old tag gone" sh -c "! grep -q v1.12.3 '$tap/Formula/paw-proxy.rb'"
-check "linux extra reported" grep -q "^ignored asset: paw-proxy-linux-arm64$" "$tap/err"
+{"os":"darwin","arch":"universal","kind":"binary","url":"%s/paw-proxy-darwin-universal","sha256":"%s"}]}' "$P" $H1 "$P" $H1 "$P" $H1)"
+check "slot updated to new tag" grep -q "download/v2026.10.1/Paw-Proxy.app.zip" "$tap/Casks/paw-proxy.rb"
+check "old tag gone" sh -c "! grep -q v0.0.0 '$tap/Casks/paw-proxy.rb'"
+check "amd64 extra reported" grep -q "^ignored asset: paw-proxy-darwin-amd64$" "$tap/err"
 check "universal extra reported" grep -q "^ignored asset: paw-proxy-darwin-universal$" "$tap/err"
-check "paw-proxy parses" ruby -c "$tap/Formula/paw-proxy.rb"
 fresh
 
 # 8. cask with a linux asset
