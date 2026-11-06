@@ -2,10 +2,10 @@ cask "scratchpad" do
   # From 2026-11-05 Scratchpad releases are published only on the owner's
   # Forgejo (forgejo.triceratops-dory.ts.net), so after the first Forgejo
   # release this cask installs only on the owner's tailnet.
-  version "2026.10.3"
-  sha256 "ee3e412e32e000c955d031e5a03fa1613e11089088a9742f0a5cafd6a2fb6047"
+  version "2026.11.06.3"
+  sha256 "7761640671ee156bd3cbba626a26ebf413621bb73e258ac6ec98848f9b06b6e3"
 
-  url "https://github.com/alexcatdad/scratchpad/releases/download/v2026.10.3/scratchpad-2026.10.3-darwin-arm64.zip"
+  url "https://forgejo.triceratops-dory.ts.net/alexcatdad/scratchpad/releases/download/v2026.11.06.3/scratchpad-2026.11.06.3-darwin-arm64.zip"
   name "Scratchpad"
   desc "Menu bar app for private developer memory"
   homepage "https://github.com/alexcatdad/scratchpad"
