@@ -39,6 +39,7 @@ brew install --cask alexcatdad/tap/usb-boop
 installs the cask (then suggests `brew uninstall --formula --force paw-proxy`).
 
 Scratchpad releases are published only on the owner's Forgejo
-(`forgejo.triceratops-dory.ts.net`). From its first Forgejo release onward, the
-`scratchpad` cask downloads from there and installs only on the owner's
-tailnet.
+(`forgejo.triceratops-dory.ts.net`), which requires sign-in. The `scratchpad`
+cask installs only on the owner's tailnet and sends `HOMEBREW_FORGEJO_TOKEN`, a
+read-only token of the `scratchpad-releases` account, which Homebrew loads from
+`brew.env` (`~/.homebrew/brew.env` or `$XDG_CONFIG_HOME/homebrew/brew.env`).
