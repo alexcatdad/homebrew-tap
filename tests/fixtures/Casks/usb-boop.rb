@@ -2,10 +2,10 @@ cask "usb-boop" do
   version "2026.09.17.5"
   sha256 "0000000000000000000000000000000000000000000000000000000000000001"
 
-  url "https://github.com/example-org/usb-boop/releases/download/v2026.09.17.5/usb-boop-macos-arm64.zip"
+  url "https://github.com/alexcatdad/usb-boop/releases/download/v2026.09.17.5/usb-boop-macos-arm64.zip"
   name "usb-boop"
   desc "Menu bar app that reports negotiated USB link speed"
-  homepage "https://github.com/example-org/usb-boop"
+  homepage "https://github.com/alexcatdad/usb-boop"
 
   livecheck do
     url :url

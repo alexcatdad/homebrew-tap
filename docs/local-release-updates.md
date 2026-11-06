@@ -45,6 +45,8 @@ re-running the same document without rebuilding or re-releasing anything.
   field must be exactly `https://github.com` (the default when absent) or
   `https://forgejo.triceratops-dory.ts.net`; any other value exits 2.
 - A cask carries only `darwin` assets.
+- `repo` must be the app's bound repository, `alexcatdad/<app>` (see the
+  ownership table); any other repository exits 2.
 
 ## Matching assets to the package file
 
@@ -68,7 +70,7 @@ Slots with interpolated URLs (`#{version}`) are unsupported.
 | Code | Meaning |
 |------|---------|
 | 0 | Applied, or already identical (tree unchanged) |
-| 2 | Invalid input: schema, unsupported host, URL prefix, hashes, cask with non-darwin assets, unknown package or package not owned by `app`, a package slot with no matching asset |
+| 2 | Invalid input: schema, unsupported host, URL prefix, hashes, cask with non-darwin assets, unknown package or package not owned by `app`, `repo` other than the app's bound repository, a package slot with no matching asset |
 | 3 | Regression: the package already has a newer version |
 | 4 | Same version already present with different URLs or hashes |
 | other | Failure (unreadable file, unsupported layout, syntax check failed) |
@@ -80,26 +82,26 @@ prefix and any pre-release suffix, so `0.3.0` < `1.12.3` < `2026.9.17.5` <
 
 ## Package ownership
 
-| App | Owned entries | Platforms |
-|-----|---------------|-----------|
-| scratchpad | `Casks/scratchpad.rb` | macOS arm64 only. `Formula/scratchpad-mcp.rb` is deprecated and no longer updated. |
-| usb-boop | `Casks/usb-boop.rb` | macOS arm64 only |
-| pr-nanny | `Casks/pr-nanny.rb` | macOS arm64 only. The Linux `Formula/pr-nanny.rb` was removed on 2026-11-05. |
-| paw-proxy | `Casks/paw-proxy.rb` (macOS arm64 app), `Formula/paw-proxy.rb` | The cask is a `0.0.0` placeholder that the first app release rewrites. The formula is macOS arm64/amd64 only and deprecated 2026-11-05 with `replacement_cask: "paw-proxy"`. |
+| App | Repository | Owned entries | Platforms |
+|-----|------------|---------------|-----------|
+| scratchpad | `alexcatdad/scratchpad` | `Casks/scratchpad.rb` | macOS arm64 only. `Formula/scratchpad-mcp.rb` is deprecated and no longer updated. |
+| usb-boop | `alexcatdad/usb-boop` | `Casks/usb-boop.rb` | macOS arm64 only |
+| pr-nanny | `alexcatdad/pr-nanny` | `Casks/pr-nanny.rb` | macOS arm64 only. The Linux `Formula/pr-nanny.rb` was removed on 2026-11-05. |
+| paw-proxy | `alexcatdad/paw-proxy` | `Casks/paw-proxy.rb` | macOS arm64 app; its `binary` stanzas link the bundled `paw-proxy` and `up` helpers onto PATH. `Formula/paw-proxy.rb` was removed on 2026-11-06. |
 
 Casks are macOS-only. The updater rejects any package not
 listed above, including `Formula/paw.rb`, which no application owns here.
-`Formula/pr-nanny.rb` was removed on 2026-11-05; no other package has been renamed or removed.
+`Formula/pr-nanny.rb` (2026-11-05) and `Formula/paw-proxy.rb` (2026-11-06) were removed; no other package has been renamed or removed.
+The updater rewrites only `version`, `url` and `sha256` lines, so other stanzas
+such as `binary`, `livecheck` and `zap` are preserved.
 New app casks land as a placeholder at version `0.0.0` with a zero checksum and a
 release-asset URL whose file name matches the release, so the first release is
 an ordinary update through the regression guard; the updater never creates files.
 
 ### Decisions needed
 
-1. `Formula/paw.rb` versus `Formula/paw-proxy.rb`. `paw` (dotfiles manager, 0.5.0)
-   and `paw-proxy` (HTTPS proxy, 1.12.3) are different tools with different
-   upstream repositories, so the current mapping treats `paw-proxy` as the
-   fourth application and leaves `paw` unmanaged by this updater. Choose: keep
+1. `Formula/paw.rb`. `paw` (dotfiles manager, 0.5.0) is unrelated to
+   `paw-proxy` and is not managed by this updater. Choose: keep
    `paw` as a manually maintained formula, add it as a fifth application, or
    remove it.
 2. Decided 2026-11-05: pr-nanny is macOS-only and ships as the cask; the Linux

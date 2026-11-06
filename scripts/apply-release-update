@@ -28,12 +28,13 @@ ALLOWED_HOSTS = [DEFAULT_HOST, "https://forgejo.triceratops-dory.ts.net"].freeze
 OSES = %w[darwin linux].freeze
 ARCHES = %w[arm64 amd64 universal].freeze
 ASSET_KINDS = %w[binary tar.gz zip dmg pkg rpm].freeze
-# Packages each application owns. Anything else is rejected as unknown.
+# Packages each application owns, and the one source repository its release
+# documents must name. Anything else is rejected.
 OWNERS = {
-  "scratchpad" => [%w[cask scratchpad]],
-  "usb-boop" => [%w[cask usb-boop]],
-  "pr-nanny" => [%w[cask pr-nanny]],
-  "paw-proxy" => [%w[formula paw-proxy], %w[cask paw-proxy]],
+  "scratchpad" => { repo: "alexcatdad/scratchpad", packages: [%w[cask scratchpad]] },
+  "usb-boop" => { repo: "alexcatdad/usb-boop", packages: [%w[cask usb-boop]] },
+  "pr-nanny" => { repo: "alexcatdad/pr-nanny", packages: [%w[cask pr-nanny]] },
+  "paw-proxy" => { repo: "alexcatdad/paw-proxy", packages: [%w[cask paw-proxy]] },
 }.freeze
 
 def invalid(msg)
@@ -63,9 +64,11 @@ def validate(doc)
   invalid("version must be dotted numeric") unless doc["version"] =~ /\A\d+(\.\d+)+\z/
   invalid("tag must be the version, optionally prefixed with v") unless [doc["version"], "v#{doc['version']}"].include?(doc["tag"])
   invalid("repo must be owner/name") unless doc["repo"] =~ %r{\A[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\z}
-  unless (OWNERS[doc["app"]] || []).include?([doc["kind"], doc["package"]])
+  owner = OWNERS[doc["app"]]
+  unless owner && owner[:packages].include?([doc["kind"], doc["package"]])
     invalid("unknown package #{doc['kind']} #{doc['package']} for app #{doc['app']}")
   end
+  invalid("repo #{doc['repo']} is not #{owner[:repo]} for app #{doc['app']}") unless doc["repo"] == owner[:repo]
   assets = doc["assets"]
   invalid("assets must be a non-empty array") unless assets.is_a?(Array) && !assets.empty?
   host = doc.key?("host") ? doc["host"] : DEFAULT_HOST

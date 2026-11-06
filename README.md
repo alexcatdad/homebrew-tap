@@ -13,7 +13,7 @@ brew tap alexcatdad/tap
 <!-- BEGIN FORMULAE -->
 | Formula | Version | Description |
 |---------|---------|-------------|
-| [paw-proxy](https://github.com/alexcatdad/paw-proxy) | 1.12.3 (deprecated) | Zero-config HTTPS proxy for local macOS development; to be replaced by the Paw Proxy app cask |
+| [paw-proxy](https://github.com/alexcatdad/paw-proxy) | 2026.11.06.1 | Zero-config HTTPS proxy for local development (signed macOS ARM64 app cask; puts `paw-proxy` and `up` on PATH) |
 | [paw](https://github.com/alexcatdad/paw) | 0.5.0 | Personal dotfiles manager CLI |
 | [pr-nanny](https://github.com/alexcatdad/pr-nanny) | 0.1.0-rc.6 | Passive GitHub pull-request monitor (signed macOS ARM64 cask) |
 | [scratchpad](https://github.com/alexcatdad/scratchpad) | 2026.10.3 | Menu bar app for private developer memory (signed macOS ARM64 cask; installs only on the owner's tailnet, see below) |
@@ -25,7 +25,7 @@ brew tap alexcatdad/tap
 
 <!-- BEGIN INSTALL -->
 ```bash
-brew install alexcatdad/tap/paw-proxy
+brew install --cask alexcatdad/tap/paw-proxy
 brew install alexcatdad/tap/paw
 brew install --cask alexcatdad/tap/pr-nanny
 brew install --cask alexcatdad/tap/scratchpad
