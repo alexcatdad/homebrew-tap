@@ -34,6 +34,10 @@ brew install --cask alexcatdad/tap/usb-boop
 
 <!-- END INSTALL -->
 
+`tap_migrations.json` moves users of the retired `paw-proxy` formula to the
+`paw-proxy` cask: on their next `brew update`, Homebrew unlinks the formula and
+installs the cask (then suggests `brew uninstall --formula --force paw-proxy`).
+
 Scratchpad releases are published only on the owner's Forgejo
 (`forgejo.triceratops-dory.ts.net`). From its first Forgejo release onward, the
 `scratchpad` cask downloads from there and installs only on the owner's
