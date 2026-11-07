@@ -1,8 +1,8 @@
 cask "paw-proxy" do
-  version "2026.11.06.3"
-  sha256 "84549fd55431bd56c8af35c227126c4dc2555757078f7627fa6f1aeeab92451e"
+  version "2026.11.07.1"
+  sha256 "d8db5b2e1ad67f4a103eecb0eb93218fd995c42e6163d49d80305a796e9f2576"
 
-  url "https://github.com/alexcatdad/paw-proxy/releases/download/v2026.11.06.3/Paw-Proxy.app.zip"
+  url "https://github.com/alexcatdad/paw-proxy/releases/download/v2026.11.07.1/Paw-Proxy.app.zip"
   name "Paw Proxy"
   desc "Zero-config HTTPS proxy for local development"
   homepage "https://github.com/alexcatdad/paw-proxy"
