@@ -1,8 +1,8 @@
 cask "usb-boop" do
-  version "2026.11.06.3"
-  sha256 "a234b1505d18d959cbf5f3dee3bc44f3b6d58ae28e3afdea9126963e50819aaf"
+  version "2026.11.07.1"
+  sha256 "147f1780a42b8afc013d159919a18509838a12b4e01a08816ec7ff7f05827ba5"
 
-  url "https://github.com/alexcatdad/usb-boop/releases/download/v2026.11.06.3/usb-boop-macos-arm64.zip"
+  url "https://github.com/alexcatdad/usb-boop/releases/download/v2026.11.07.1/usb-boop-macos-arm64.zip"
   name "usb-boop"
   desc "Menu bar app that reports negotiated USB link speed"
   homepage "https://github.com/alexcatdad/usb-boop"
