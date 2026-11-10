@@ -1,14 +1,8 @@
 cask "scratchpad" do
-  # Scratchpad releases are published only on the owner's Forgejo
-  # (forgejo.triceratops-dory.ts.net), which requires sign-in, so this cask
-  # installs only on the owner's tailnet and needs HOMEBREW_FORGEJO_TOKEN: a
-  # read-only token of the scratchpad-releases account, loaded through
-  # brew.env. Without it Forgejo returns its sign-in page and the checksum fails.
   version "2026.11.07.1"
   sha256 "f601ff06fc79b0f22630ebf7dff3ba24492a2be6be9a20467b487ded57dc8385"
 
-  url "https://forgejo.triceratops-dory.ts.net/alexcatdad/scratchpad/releases/download/v2026.11.07.1/scratchpad-2026.11.07.1-darwin-arm64.zip",
-      header: "Authorization: token #{ENV.fetch("HOMEBREW_FORGEJO_TOKEN", "")}"
+  url "https://forgejo.triceratops-dory.ts.net/alexcatdad/scratchpad/releases/download/v2026.11.07.1/scratchpad-2026.11.07.1-darwin-arm64.zip"
   name "Scratchpad"
   desc "Menu bar app for private developer memory"
   homepage "https://github.com/alexcatdad/scratchpad"
