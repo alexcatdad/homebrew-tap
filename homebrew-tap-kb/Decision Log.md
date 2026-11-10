@@ -77,3 +77,7 @@ Scratchpad releases are published only on the owner's Forgejo (`forgejo.tricerat
 ## 2026-11-06: paw-proxy is cask-only; apps bound to their repositories
 
 `Casks/paw-proxy.rb` links the app's bundled helpers (`Paw Proxy.app/Contents/Helpers/paw-proxy` and `up`, per paw-proxy's `macos/Scripts/package-app.sh`) onto PATH with `binary` stanzas and gains a `livecheck` block like usb-boop's. `Formula/paw-proxy.rb` is removed: it shared the `paw-proxy` token with the cask, so `brew install alexcatdad/tap/paw-proxy` resolved to the old formula. The updater no longer maps it. Each app in the updater's `OWNERS` is bound to its source repository (`alexcatdad/<app>`); a document naming any other repository exits 2. The updater rewrites only `version`, `url` and `sha256` lines, and a test checks that the cask's `binary` and `livecheck` stanzas survive an update.
+
+## 2026-11-10: Scratchpad releases return to GitHub
+
+The Forgejo instance is retired, so Scratchpad releases are published on GitHub again. The `scratchpad` cask no longer sends `HOMEBREW_FORGEJO_TOKEN`; its URL is rewritten by the next release. Releases up to 2026.11.07.1 were published on Forgejo and are no longer downloadable. `scripts/apply-release-update` still accepts the Forgejo host value; removing it is a separate cleanup.
