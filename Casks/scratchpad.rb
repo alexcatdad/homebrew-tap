@@ -1,8 +1,8 @@
 cask "scratchpad" do
-  version "2026.11.07.1"
-  sha256 "f601ff06fc79b0f22630ebf7dff3ba24492a2be6be9a20467b487ded57dc8385"
+  version "2026.11.11.1"
+  sha256 "fcf4ce66d3df64f077e06a0d23aed71cdbde64c431e668a8102ca9cab2db0b07"
 
-  url "https://forgejo.triceratops-dory.ts.net/alexcatdad/scratchpad/releases/download/v2026.11.07.1/scratchpad-2026.11.07.1-darwin-arm64.zip"
+  url "https://github.com/alexcatdad/scratchpad/releases/download/v2026.11.11.1/scratchpad-2026.11.11.1-darwin-arm64.zip"
   name "Scratchpad"
   desc "Menu bar app for private developer memory"
   homepage "https://github.com/alexcatdad/scratchpad"
